@@ -73,7 +73,10 @@ def main():
         shutil.copy(tmp.name, filename)
         os.unlink(tmp.name)
 
-    sys.exit(conflicts_remain ? 1 : 0)
+    if conflicts_remain:
+        sys.exit(1)
+    else:
+        sys.exit(0)
 
 
 def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
