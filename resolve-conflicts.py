@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 
+# This is a helper script for `resolve-adjacent-conflicts` and
+# `resolve-import-conflicts`.
+
 """Edits a file in place to remove certain conflict markers.
 
 Usage: resolve-conflicts.py [options] <filenme>
