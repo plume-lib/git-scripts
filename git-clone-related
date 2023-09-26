@@ -88,14 +88,29 @@ if [ -d "${DESTINATION}" ]; then
 else
   SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 
+  CI_INFO="$SCRIPTDIR/../plume-scripts/ci-info"
+  if [ ! -f "$CI_INFO" ] ; then
+      CI_INFO="$SCRIPTDIR/../.plume-scripts/ci-info"
+  fi
+  if [ ! -f "$CI_INFO" ] ; then
+      CI_INFO="$SCRIPTDIR/.plume-scripts/ci-info"
+  fi
+  if [ ! -f "$CI_INFO" ] ; then
+      git clone -C "$SCRIPTDIR" https://github.com/plume-lib/plume-scripts .plume-scripts
+  fi
+  if [ ! -f "$CI_INFO" ] ; then
+      echo "CI_INFO does not exist: $CI_INFO"
+      exit 1
+  fi
+
   if [ -n "$DEBUG" ] ; then
     echo "About to run ci-info --debug"
-    "${SCRIPTDIR}/ci-info" --debug "${UPSTREAM_ORG}"
+    "${CI_INFO}" --debug "${UPSTREAM_ORG}"
     echo "Ran ci-info --debug"
     echo "About to run ci-info"
   fi
 
-  eval "$("${SCRIPTDIR}"/ci-info "${UPSTREAM_ORG}")"
+  eval "$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ] ; then
     echo "Finished running ci-info"
   fi
