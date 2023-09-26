@@ -168,8 +168,8 @@ def merge(base, parent1, parent2):
 
 
 def all_import_lines(lines):
-    """Return true if every given line is a Java import line."""
-    return all(line.startswith("import ") for line in lines)
+    """Return true if every given line is a Java import line or is blank."""
+    return all(line.startswith("import ") or line.strip() == "" for line in lines)
 
 
 def merge_edits_on_different_lines(base, parent1, parent2):
