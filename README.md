@@ -2,6 +2,9 @@
 
 These scripts automate various Git tasks.
 
+Also see https://github.com/plume-lib/manage-git-branches
+and https://github.com/plume-lib/plume-scripts.
+
 ## Installation
 
 To install, run the following (or put it at the top of a script).
