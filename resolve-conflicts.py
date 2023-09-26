@@ -11,6 +11,9 @@ Usage: resolve-conflicts.py [options] <filenme>
 The output includes every `import` statements that is in either of the parents.
 
 --adjacent_lines: Resolves conflicts on adjacent lines, by accepting both edits.
+
+Exit status is 0 (success) if no conflicts remain.
+Exit status is 1 (failure) if conflicts remain.
 """
 
 from argparse import ArgumentParser
@@ -44,6 +47,8 @@ with open(filename) as file:
 
 def main():
     """The main entry point."""
+    # Exit status 0 means no conflicts remain, 1 means some merge conflict remains.
+    conflicts_remain = False
     with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
         file_len = len(lines)
         i = 0
@@ -58,6 +63,7 @@ def main():
                 if merged is None:
                     tmp.write(lines[i])
                     i = i + 1
+                    conflicts_remain = True
                 else:
                     for line in merged:
                         tmp.write(line)
@@ -66,6 +72,8 @@ def main():
         tmp.close()
         shutil.copy(tmp.name, filename)
         os.unlink(tmp.name)
+
+    sys.exit(conflicts_remain ? 1 : 0)
 
 
 def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
