@@ -8,12 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: psf/black@stable
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11.5'
     - run: python --version
+    - uses: psf/black@stable
     - run: black --version
     - name: Install shellcheck and checkbashisms
       run: sudo apt install shellcheck devscripts
