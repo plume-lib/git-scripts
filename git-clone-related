@@ -42,8 +42,11 @@ set +e
 if [ "$1" = "--debug" ] ; then
   DEBUG=1
   shift
-  set +x
+  set -x
 fi
+
+# FOR TESTING
+DEBUG=1
 
 # FALLBACK_BRANCH may be unset.
 if [ "$1" = "--upstream-branch" ] ; then
@@ -97,9 +100,7 @@ else
   fi
   if [ ! -f "$CI_INFO" ] ; then
     # Temporary, for debugging
-    set -x
     (cd "$SCRIPTDIR" && git clone https://github.com/plume-lib/plume-scripts .plume-scripts)
-    set +x
   fi
   if [ ! -f "$CI_INFO" ] ; then
     echo "CI_INFO does not exist: $CI_INFO"
