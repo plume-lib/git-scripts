@@ -10,55 +10,13 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: 8
-    - run: echo "JAVA8_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: java -version
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: 11
-    - run: echo "JAVA11_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: java -version
-    - uses: actions/setup-java@v3
-      with:
-        distribution: 'zulu'
-        java-version: 17
-    - run: echo "JAVA17_HOME=$JAVA_HOME" >> $GITHUB_ENV
-    - run: echo "${GITHUB_WORKSPACE}/src/scripts/merge_tools" >> $GITHUB_PATH
-    - run: java -version
     - uses: actions/checkout@v4
-    - name: Set up Python 3.8
+    - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
-    - name: Setup miniconda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        python-version: 3.8
-        auto-update-conda: true
-        channels: conda-forge,defaults
-        mamba-version: "*"
-        activate-environment: AST
-        environment-file: environment.yml
-    - name: Install PdfLaTeX
-      run: sudo apt update && sudo apt install texlive-latex-extra -y
-    - name: Install maven
-      uses: s4u/setup-maven-action@v1.8.0
-      with:
-        java-version: 17
-        maven-version: ${{ matrix.maven }}
-    - name: Clean caches & workspace
-      run: make clean
-    - name: Build Java programs
-      run: ./gradlew build
-    - name: Run small test
+        python-version: '3.11.5'
+    - name: Run tests
       run: |
         git config --global user.email "example@example.com"
         git config --global user.name "Example Example"
-        make small-test
-      env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-
+        make test
