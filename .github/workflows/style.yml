@@ -13,6 +13,8 @@ jobs:
       with:
         python-version: '3.11.5'
     - run: python --version
+    - name: Install Python programs
+      run: pipx install black pylint
     - uses: psf/black@stable
     - run: black --version
     - name: Install shellcheck and checkbashisms

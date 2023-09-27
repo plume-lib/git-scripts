@@ -43,9 +43,11 @@ SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 status=0
 
 for file in "${files[@]}" ; do
+  echo "before: $(sha256sum "$file")"
   if ! "${SCRIPTDIR}"/resolve-conflicts.py --adjacent_lines "$file" ; then
     status=1
   fi
+  echo "after (status=$status: $(sha256sum "$file")"
 done
 
 exit $status
