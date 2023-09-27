@@ -64,11 +64,9 @@ def main():  # pylint: disable=too-many-locals
                 i = i + 1
             else:
                 (base, parent1, parent2, num_lines) = conflict
-                debug_print("conflict: base = ", base, "; parent1 =", parent1, "; parent2 =", parent2, "; num_lines =", num_lines)
                 merged = merge(
                     base, parent1, parent2, args.java_imports, args.adjacent_lines
                 )
-                debug_print("merge => ", merged)
                 if merged is None:
                     tmp.write(lines[i])
                     i = i + 1
@@ -177,30 +175,15 @@ def merge(
         a list of lines, or None if it cannot do merging.
     """
 
-    debug_print("merge:", base, parent1, parent2)
-    debug_print("merge: java_imports =", java_imports, "; adjacent_lines =", adjacent_lines)
-
     if java_imports:
-        debug_print("all_import_lines:",             all_import_lines(base), all_import_lines(parent1),  all_import_lines(parent2))
-        debug_print("sizes:",             len(base), len(parent1),  len(parent2))
         if (
             all_import_lines(base)
             and all_import_lines(parent1)
             and all_import_lines(parent2)
         ):
             # A simplistic merge that retains all import lines in either parent.
-            result = parent1 + parent2
-            debug_print("merge; simple concatenation, size", len(result), " =", result)
-            result = set(result)
-            debug_print("merge; as set, size", len(result), " =", result)
-            result = list(result)
-            debug_print("merge; as list, size", len(result), " =", result)
-            result.sort()
-            debug_print("merge; sorted, size", len(result), " =", result)
-
             result = list(set(parent1 + parent2))
             result.sort()
-            debug_print("merge (via simple import union) =>", result)
             return result
 
     if adjacent_lines:
@@ -249,19 +232,16 @@ def merge_edits_on_different_lines(
         return result
 
     ### Deletions at the beginning or end.
-    debug_print("merge_edits_on_different_lines: Deletions at the beginning or end.")
     if base_len != 0:
         result = merge_base_is_prefix_or_suffix(base, parent1, parent2)
         if result is None:
             result = merge_base_is_prefix_or_suffix(base, parent2, parent1)
         if result is not None:
-            debug_print("merge_edits_on_different_lines =>", result)
             return result
 
     ### Interleaved deletions, with an empty merge outcome.
     if base_len != 0:
         if is_subsequence(parent1, base) and is_subsequence(parent2, base):
-            debug_print("merge_edits_on_different_lines =>", [])
             return []
 
     debug_print("merge_edits_on_different_lines =>", result)
