@@ -1,0 +1,19 @@
+name: Check style
+on: [push, pull_request]
+jobs:
+  style:
+    defaults:
+      run:
+        shell: bash -l {0}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: psf/black@stable
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11.5'
+    - name: Install shellcheck and checkbashisms
+      run: sudo apt install shellcheck devscripts
+    - name: Check style
+      run: make style
