@@ -90,17 +90,17 @@ else
 
   CI_INFO="$SCRIPTDIR/../plume-scripts/ci-info"
   if [ ! -f "$CI_INFO" ] ; then
-      CI_INFO="$SCRIPTDIR/../.plume-scripts/ci-info"
+    CI_INFO="$SCRIPTDIR/../.plume-scripts/ci-info"
   fi
   if [ ! -f "$CI_INFO" ] ; then
-      CI_INFO="$SCRIPTDIR/.plume-scripts/ci-info"
+    CI_INFO="$SCRIPTDIR/.plume-scripts/ci-info"
   fi
   if [ ! -f "$CI_INFO" ] ; then
-      git clone -C "$SCRIPTDIR" https://github.com/plume-lib/plume-scripts .plume-scripts
+    (cd "$SCRIPTDIR" && git clone https://github.com/plume-lib/plume-scripts .plume-scripts)
   fi
   if [ ! -f "$CI_INFO" ] ; then
-      echo "CI_INFO does not exist: $CI_INFO"
-      exit 1
+    echo "CI_INFO does not exist: $CI_INFO"
+    exit 1
   fi
 
   if [ -n "$DEBUG" ] ; then
