@@ -96,7 +96,10 @@ else
     CI_INFO="$SCRIPTDIR/.plume-scripts/ci-info"
   fi
   if [ ! -f "$CI_INFO" ] ; then
+    # Temporary, for debugging
+    set -x
     (cd "$SCRIPTDIR" && git clone https://github.com/plume-lib/plume-scripts .plume-scripts)
+    set +x
   fi
   if [ ! -f "$CI_INFO" ] ; then
     echo "CI_INFO does not exist: $CI_INFO"
