@@ -45,9 +45,6 @@ if [ "$1" = "--debug" ] ; then
   set -x
 fi
 
-# FOR TESTING
-DEBUG=1
-
 # FALLBACK_BRANCH may be unset.
 if [ "$1" = "--upstream-branch" ] ; then
   shift
@@ -99,7 +96,6 @@ else
     CI_INFO="$SCRIPTDIR/.plume-scripts/ci-info"
   fi
   if [ ! -f "$CI_INFO" ] ; then
-    # Temporary, for debugging
     (cd "$SCRIPTDIR" && git clone https://github.com/plume-lib/plume-scripts .plume-scripts)
   fi
   if [ ! -f "$CI_INFO" ] ; then

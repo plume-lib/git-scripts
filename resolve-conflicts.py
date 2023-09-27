@@ -29,7 +29,7 @@ from collections.abc import Sequence
 T = TypeVar("T")  # Type variable for use in type hints
 
 # If true, print diagnostic output
-debug = False
+debug = True
 
 
 def main():  # pylint: disable=too-many-locals
