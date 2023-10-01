@@ -23,17 +23,7 @@ Merged_ConflictStyleDiff3.java: MergedByGit_ConflictStyleDiff3.java
 MergedByGit_ConflictStyleMerge.java: Parent1.java Base.java Parent2.java
 	-git config --get diff.context
 	-git -c merge.conflictStyle=merge -c diff.context=10 merge-file --no-diff3 -q  -p $^ > $@
-	git --version
-	git config -l
-	echo "---- start of MergedByGit.java ----"
-	cat MergedByGit.java
-	echo "---- end of MergedByGit.java ----"
 
 MergedByGit_ConflictStyleDiff3.java: Parent1.java Base.java Parent2.java
 	-git config --get diff.context
 	-git -c merge.conflictStyle=diff3 merge-file --diff3 -q  -p $^ > $@
-	git --version
-	git config -l
-	echo "---- start of MergedByGit.java ----"
-	cat MergedByGit.java
-	echo "---- end of MergedByGit.java ----"
