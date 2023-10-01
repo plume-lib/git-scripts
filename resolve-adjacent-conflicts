@@ -32,6 +32,8 @@
 #   kdiff3 --auto --cs "ShowInfoDialogs=0" base.txt parent1.txt parent2.txt -o merged.txt
 # Also, the `--auto` option is ignored for folder comparison.
 
+DEBUG=1
+
 if [ "$#" -eq 0 ] ; then
   readarray -t files < <(grep -l -r '^<<<<<<< HEAD' .)
 else
@@ -43,11 +45,17 @@ SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 status=0
 
 for file in "${files[@]}" ; do
-  echo "before: $(sha256sum "$file")"
+  if [ "$DEBUG" ] ; then
+    echo "before resolve-conflicts.py: $(sha256sum "$file")"
+    cat "$file"
+  fi
   if ! "${SCRIPTDIR}"/resolve-conflicts.py --adjacent_lines "$file" ; then
     status=1
   fi
-  echo "after (status=$status: $(sha256sum "$file")"
+  if [ "$DEBUG" ] ; then
+    echo "after resolve-conflicts.py: (status=$status: $(sha256sum "$file")"
+    cat "$file"
+  fi
 done
 
 exit $status
