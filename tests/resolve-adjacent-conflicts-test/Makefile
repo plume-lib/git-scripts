@@ -1,3 +1,5 @@
+RESOLVER=../../resolve-adjacent-conflicts
+
 test: diff
 
 diff: Merged_ConflictStyleMerge.diff Merged_ConflictStyleDiff3.diff
@@ -14,16 +16,14 @@ clean:
 
 Merged_ConflictStyleMerge.java: MergedByGit_ConflictStyleMerge.java
 	cp -pf $^ $@
-	-../../resolve-adjacent-conflicts $@
+	-"${RESOLVER}" $@
 
 Merged_ConflictStyleDiff3.java: MergedByGit_ConflictStyleDiff3.java
 	cp -pf $^ $@
-	-../../resolve-adjacent-conflicts $@
+	-"${RESOLVER}" $@
 
 MergedByGit_ConflictStyleMerge.java: Parent1.java Base.java Parent2.java
-	-git config --get diff.context
 	-git -c merge.conflictStyle=merge -c diff.context=10 merge-file --no-diff3 -q  -p $^ > $@
 
 MergedByGit_ConflictStyleDiff3.java: Parent1.java Base.java Parent2.java
-	-git config --get diff.context
 	-git -c merge.conflictStyle=diff3 merge-file --diff3 -q  -p $^ > $@

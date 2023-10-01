@@ -1,20 +1,29 @@
+RESOLVER=../../resolve-import-conflicts
+
 test: diff
 
-diff: MergedGoal.java Merged1.java Merged2.java
-	diff -u MergedGoal.java Merged1.java
-	diff -u MergedGoal.java Merged2.java
+diff: Merged_ConflictStyleMerge.diff Merged_ConflictStyleDiff3.diff
+
+Merged_ConflictStyleMerge.diff: Merged_ConflictStyleMerge.goal Merged_ConflictStyleMerge.java
+	diff -u $^ > $@
+
+Merged_ConflictStyleDiff3.diff: Merged_ConflictStyleDiff3.goal Merged_ConflictStyleDiff3.java
+	diff -u $^ > $@
 
 clean:
-	rm -f Merged1.java Merged2.java
+	rm -f MergedByGit_ConflictStyleMerge.java MergedByGit_ConflictStyleDiff3.java
+	rm -f Merged_ConflictStyleMerge.java Merged_ConflictStyleDiff3.java
 
-Merged1.java: MergedByGit.java
+Merged_ConflictStyleMerge.java: MergedByGit_ConflictStyleMerge.java
 	cp -pf $^ $@
-	../../resolve-import-conflicts $@
+	-"${RESOLVER}" $@
 
-Merged2.java: MergedByGit.java
+Merged_ConflictStyleDiff3.java: MergedByGit_ConflictStyleDiff3.java
 	cp -pf $^ $@
-	../../resolve-import-conflicts $@
+	-"${RESOLVER}" $@
 
-MergedByGit.java: Parent1.java Base.java Parent2.java
-	-git config --get diff.context
-	-git -c merge.tool= merge-file -q  -p $^ > $@
+MergedByGit_ConflictStyleMerge.java: Parent1.java Base.java Parent2.java
+	-git -c merge.conflictStyle=merge -c diff.context=10 merge-file --no-diff3 -q  -p $^ > $@
+
+MergedByGit_ConflictStyleDiff3.java: Parent1.java Base.java Parent2.java
+	-git -c merge.conflictStyle=diff3 merge-file --diff3 -q  -p $^ > $@
