@@ -1,4 +1,6 @@
 .plume-scripts
+tests/**/Merged*.diff
+tests/**/Merged*.java
 tests/lint-diff-test/guessstrip-lint-pruned.txt
 tests/lint-diff-test/reldir-lint-pruned.txt
 tests/lint-diff-test/words-lint.txt
@@ -10,6 +12,4 @@ tests/lint-diff-test/words2-lint-pruned.txt-goal-nofilename
 tests/lint-diff-test/words2-lint-pruned.txt-nofilename
 tests/lint-diff-test/words2-lint.txt
 tests/lint-diff-test/words2.txt
-tests/**/Merged*.java
-tests/**/Merged*.diff
 tests/sort-compiler-output-test/errors1-sorted.actual
