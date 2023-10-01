@@ -1,19 +1,38 @@
 test: diff
 
-diff: MergedGoal.java Merged.java
-	diff -u $^
+diff: Merged_ConflictStyleMerge.diff Merged_ConflictStyleDiff3.diff
+
+Merged_ConflictStyleMerge.diff: Merged_ConflictStyleMerge.goal Merged_ConflictStyleMerge.java
+	diff -u $^ > $@
+
+Merged_ConflictStyleDiff3.diff: Merged_ConflictStyleDiff3.goal Merged_ConflictStyleDiff3.java
+	diff -u $^ > $@
 
 clean:
-	rm -f Merged.java MergedByGit.java
+	rm -f MergedByGit_ConflictStyleMerge.java MergedByGit_ConflictStyleDiff3.java
+	rm -f Merged_ConflictStyleMerge.java Merged_ConflictStyleDiff3.java
 
-.PHONY: Merged.java
-Merged.java: MergedByGit.java
+Merged_ConflictStyleMerge.java: MergedByGit_ConflictStyleMerge.java
 	cp -pf $^ $@
 	-../../resolve-adjacent-conflicts $@
 
-MergedByGit.java: Parent1.java Base.java Parent2.java
+Merged_ConflictStyleDiff3.java: MergedByGit_ConflictStyleDiff3.java
+	cp -pf $^ $@
+	-../../resolve-adjacent-conflicts $@
+
+MergedByGit_ConflictStyleMerge.java: Parent1.java Base.java Parent2.java
 	-git config --get diff.context
-	-git -c merge.tool= merge-file -q  -p $^ > $@
+	-git -c merge.conflictStyle=merge -c diff.context=10 merge-file --no-diff3 -q  -p $^ > $@
+	git --version
+	git config -l
+	echo "---- start of MergedByGit.java ----"
+	cat MergedByGit.java
+	echo "---- end of MergedByGit.java ----"
+
+MergedByGit_ConflictStyleDiff3.java: Parent1.java Base.java Parent2.java
+	-git config --get diff.context
+	-git -c merge.conflictStyle=diff3 merge-file --diff3 -q  -p $^ > $@
+	git --version
 	git config -l
 	echo "---- start of MergedByGit.java ----"
 	cat MergedByGit.java
