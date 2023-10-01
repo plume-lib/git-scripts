@@ -1,7 +1,12 @@
-all: check-python-style shell-script-style test
+all: test check-style
 
 test:
 	${MAKE} -C tests test
+
+clean:
+	${MAKE} -C tests clean
+
+check-style: check-python-style shell-script-style
 
 PYTHON_FILES=$(wildcard *.py)
 

@@ -23,43 +23,50 @@ import shutil
 import sys
 import tempfile
 
-arg_parser = ArgumentParser()
-arg_parser.add_argument("filename")
-arg_parser.add_argument(
-    "--java_imports",
-    action="store_true",
-    help="If set, resolve conflicts related to Java import statements",
-)
-arg_parser.add_argument(
-    "--adjacent_lines",
-    action="store_true",
-    help="If set, resolve conflicts on adjacent lines",
-)
-args = arg_parser.parse_args()
+from typing import List, Union, Tuple, TypeVar
+from collections.abc import Sequence
 
-# Global variables: `filename` and `lines`.
+T = TypeVar("T")  # Type variable for use in type hints
 
-filename = args.filename
-
-with open(filename) as file:
-    lines = file.readlines()
+# If true, print diagnostic output
+debug = True
 
 
-def main():
+def main():  # pylint: disable=too-many-locals
     """The main entry point."""
+    arg_parser = ArgumentParser()
+    arg_parser.add_argument("filename")
+    arg_parser.add_argument(
+        "--java_imports",
+        action="store_true",
+        help="If set, resolve conflicts related to Java import statements",
+    )
+    arg_parser.add_argument(
+        "--adjacent_lines",
+        action="store_true",
+        help="If set, resolve conflicts on adjacent lines",
+    )
+    args = arg_parser.parse_args()
+    filename = args.filename
+
+    with open(filename) as file:
+        lines = file.readlines()
+
     # Exit status 0 means no conflicts remain, 1 means some merge conflict remains.
     conflicts_remain = False
     with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
         file_len = len(lines)
         i = 0
         while i < file_len:
-            conflict = looking_at_conflict(i, lines)
+            conflict = looking_at_conflict(filename, i, lines)
             if conflict is None:
                 tmp.write(lines[i])
                 i = i + 1
             else:
                 (base, parent1, parent2, num_lines) = conflict
-                merged = merge(base, parent1, parent2)
+                merged = merge(
+                    base, parent1, parent2, args.java_imports, args.adjacent_lines
+                )
                 if merged is None:
                     tmp.write(lines[i])
                     i = i + 1
@@ -79,11 +86,14 @@ def main():
         sys.exit(0)
 
 
-def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
+def looking_at_conflict(  # pylint: disable=too-many-return-statements
+    filename: str, start_index: int, lines: List[str]
+) -> Union[None, Tuple[List[str], List[str], List[str], int]]:
     """Tests whether the following text starts a conflict.
     If not, returns None.
     If so, returns a 4-tuple of (base, parent1, parent2, num_lines_in_conflict)
     where the first 3 elements of the tuple are lists of lines.
+    The filename argument is used only for diagnostic messages.
     """
 
     if not lines[start_index].startswith("<<<<<<<"):
@@ -103,9 +113,9 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
         parent1.append(lines[index])
         index = index + 1
         if index == num_lines:
-            print(
+            debug_print(
                 "Starting at line "
-                + start_index
+                + str(start_index)
                 + ", did not find ||||||| or ======= in "
                 + filename
             )
@@ -113,15 +123,15 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
     if lines[index].startswith("|||||||"):
         index = index + 1
         if index == num_lines:
-            print("File ends with |||||||: " + filename)
+            debug_print("File ends with |||||||: " + filename)
             return None
         while not lines[index].startswith("======="):
             base.append(lines[index])
             index = index + 1
             if index == num_lines:
-                print(
+                debug_print(
                     "Starting at line "
-                    + start_index
+                    + str(start_index)
                     + ", did not find ======= in "
                     + filename
                 )
@@ -129,15 +139,15 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
     assert lines[index].startswith("=======")
     index = index + 1  # skip over "=======" line
     if index == num_lines:
-        print("File ends with =======: " + filename)
+        debug_print("File ends with =======: " + filename)
         return None
     while not lines[index].startswith(">>>>>>>"):
         parent2.append(lines[index])
         index = index + 1
         if index == num_lines:
-            print(
+            debug_print(
                 "Starting at line "
-                + start_index
+                + str(start_index)
                 + ", did not find >>>>>>> in "
                 + filename
             )
@@ -147,7 +157,13 @@ def looking_at_conflict(start_index, lines):  # pylint: disable=R0911
     return (base, parent1, parent2, index - start_index)
 
 
-def merge(base, parent1, parent2):
+def merge(
+    base: List[str],
+    parent1: List[str],
+    parent2: List[str],
+    java_imports: bool,
+    adjacent_lines: bool,
+) -> Union[List[str], None]:
     """Given text for the base and two parents, return merged text.
 
     Args:
@@ -159,18 +175,18 @@ def merge(base, parent1, parent2):
         a list of lines, or None if it cannot do merging.
     """
 
-    print(base, parent1, parent2)
-
-    if args.java_imports:
+    if java_imports:
         if (
             all_import_lines(base)
             and all_import_lines(parent1)
             and all_import_lines(parent2)
         ):
             # A simplistic merge that retains all import lines in either parent.
-            return list(set(parent1 + parent2)).sort()
+            result = list(set(parent1 + parent2))
+            result.sort()
+            return result
 
-    if args.adjacent_lines:
+    if adjacent_lines:
         adjacent_line_merge = merge_edits_on_different_lines(base, parent1, parent2)
         if adjacent_line_merge is not None:
             return adjacent_line_merge
@@ -178,17 +194,19 @@ def merge(base, parent1, parent2):
     return None
 
 
-def all_import_lines(lines):
+def all_import_lines(lines: List[str]) -> bool:
     """Return true if every given line is a Java import line or is blank."""
     return all(line.startswith("import ") or line.strip() == "" for line in lines)
 
 
-def merge_edits_on_different_lines(base, parent1, parent2):
+def merge_edits_on_different_lines(
+    base, parent1: List[str], parent2: List[str]
+) -> Union[List[str], None]:
     """Return a merged version, if at most parent1 or parent2 edits each line.
     Otherwise, return None.
     """
 
-    print("Entered merge_edits_on_different_lines")
+    debug_print("Entered merge_edits_on_different_lines", len(parent1), len(parent2))
 
     ### No lines are added or removed, only modified.
     base_len = len(base)
@@ -198,7 +216,7 @@ def merge_edits_on_different_lines(base, parent1, parent2):
         for base_line, parent1_line, parent2_line in itertools.zip_longest(
             base, parent1, parent2
         ):
-            print("Considering line:", base_line, parent1_line, parent2_line)
+            debug_print("Considering line:", base_line, parent1_line, parent2_line)
             if parent1_line == parent2_line:
                 result.append(parent1_line)
             elif base_line == parent1_line:
@@ -208,9 +226,9 @@ def merge_edits_on_different_lines(base, parent1, parent2):
             else:
                 result = None
                 break
-        print("merge_edits_on_different_lines =>", result)
+        debug_print("merge_edits_on_different_lines: first attempt =>", result)
     if result is not None:
-        print("merge_edits_on_different_lines =>", result)
+        debug_print("merge_edits_on_different_lines =>", result)
         return result
 
     ### Deletions at the beginning or end.
@@ -223,14 +241,16 @@ def merge_edits_on_different_lines(base, parent1, parent2):
 
     ### Interleaved deletions, with an empty merge outcome.
     if base_len != 0:
-        if issubsequence(parent1, base) and issubsequence(parent2, base):
+        if is_subsequence(parent1, base) and is_subsequence(parent2, base):
             return []
 
-    print("merge_edits_on_different_lines =>", result)
+    debug_print("merge_edits_on_different_lines =>", result)
     return result
 
 
-def merge_base_is_prefix_or_suffix(base, parent1, parent2):
+def merge_base_is_prefix_or_suffix(
+    base: List[str], parent1: List[str], parent2: List[str]
+) -> Union[List[str], None]:
     """Special cases when the base is a prefix or suffix of parent1.
     That is, parent1 is pure additions at the beginning or end of base.  Parent2
     deleted all the lines, possibly replacing them by something else.  (We know
@@ -244,15 +264,15 @@ def merge_base_is_prefix_or_suffix(base, parent1, parent2):
     parent2_len = len(parent2)
     if base_len < parent1_len:
         if parent1[:base_len] == base:
-            print("startswith", parent1, base)
+            debug_print("startswith", parent1, base)
             return parent2 + parent1[base_len:]
         if parent1[-base_len:] == base:
-            print("endswith", parent1, base)
+            debug_print("endswith", parent1, base)
             return parent1[:-base_len] + parent2
     return None
 
 
-def issubsequence(s1, s2):
+def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
     """Returns true if s1 is subsequence of s2."""
 
     # Iterative implementation.
@@ -267,6 +287,12 @@ def issubsequence(s1, s2):
     # If i reaches end of s1, we found all characters of s1 in s2,
     # so s1 is a subsequence of s2.
     return i == n
+
+
+def debug_print(*args):
+    """If debugging is enabled, pass the arguments to `print`."""
+    if debug:
+        print(*args)
 
 
 if __name__ == "__main__":
