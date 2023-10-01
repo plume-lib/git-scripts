@@ -8,12 +8,15 @@ clean:
 	rm -f Merged1.java Merged2.java
 
 Merged1.java: Parent1.java Base.java Parent2.java
+	git config --get diff.context
 	-git merge-file -q -p $^ > $@
 	../../resolve-import-conflicts $@
 
 Merged2.java: Parent1.java Base.java Parent2.java
+	git config --get diff.context
 	-git merge-file -q -p $^ > $@
 	../../resolve-import-conflicts $@
 
 MergedByGit.java: Parent1.java Base.java Parent2.java
+	git config --get diff.context
 	-git merge-file -q  -p $^ > $@
