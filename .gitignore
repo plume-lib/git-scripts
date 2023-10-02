@@ -1,4 +1,6 @@
 .plume-scripts
+tests/**/Merged*.diff
+tests/**/Merged*.java
 tests/lint-diff-test/guessstrip-lint-pruned.txt
 tests/lint-diff-test/reldir-lint-pruned.txt
 tests/lint-diff-test/words-lint.txt
