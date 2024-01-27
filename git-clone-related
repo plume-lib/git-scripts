@@ -82,7 +82,7 @@ if [ "$#" -eq 0 ]; then
 fi
 
 if [ -n "$DEBUG" ] ; then
-  echo "Entering git-clone-related $UPSTREAM_ORG $REPO_NAME $DESTINATION $@"
+  echo "Entering git-clone-related $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
 fi
 
 echo "In directory $(pwd) :"
