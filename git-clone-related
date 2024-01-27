@@ -81,6 +81,10 @@ if [ "$#" -eq 0 ]; then
   set -- -q --single-branch --depth 1
 fi
 
+if [ -n "$DEBUG" ] ; then
+  echo "Entering git-clone-related $UPSTREAM_ORG $REPO_NAME $DESTINATION $@"
+fi
+
 echo "In directory $(pwd) :"
 if [ -d "${DESTINATION}" ]; then
   echo "(cd ${DESTINATION} && git pull -q)"
