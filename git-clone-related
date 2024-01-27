@@ -36,6 +36,9 @@
 #
 # Requires the `jq` program to be installed, when used in Azure Pipelines jobs.
 
+# Do not attempt to add "--filter=blob:none" to the git command, as older git
+# clients (apparently including GitHub, as of 2024-01-27) do not support it.
+
 # Fail if any command fails.
 set +e
 
@@ -96,7 +99,7 @@ else
     CI_INFO="$SCRIPTDIR/.plume-scripts/ci-info"
   fi
   if [ ! -f "$CI_INFO" ] ; then
-    (cd "$SCRIPTDIR" && git clone https://github.com/plume-lib/plume-scripts .plume-scripts)
+    (cd "$SCRIPTDIR" && git clone --depth 1 https://github.com/plume-lib/plume-scripts .plume-scripts)
   fi
   if [ ! -f "$CI_INFO" ] ; then
     echo "CI_INFO does not exist: $CI_INFO"
@@ -138,7 +141,7 @@ else
   fi
   echo "git clone -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.
-  git clone -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
-    || (sleep 60 && git clone -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}")
+  git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+    || (sleep 60 && git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}")
 fi
 echo "Done in directory ${DESTINATION} : $(cd "${DESTINATION}" && git rev-parse HEAD)"
