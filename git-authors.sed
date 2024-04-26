@@ -106,6 +106,7 @@ s/^patrickmeiring$/Patrick Meiring/
 s/^pgbovine$/Philip Guo/
 s/^pkalauskas$/Peter Kalauskas/
 s/^plvines$/Paul Vines/
+s/^PratikBhusal$/Pratik Bhusal/
 s/^priti1999$/Priti Chattopadhyay/
 s/^racezhang$/Sai Zhang/
 s/^racezhang@gmail.com$/Sai Zhang/
@@ -126,6 +127,7 @@ s/^MichalStehlikCz$/Michal Stehlik/
 s/^sullis$/Sean C. Sullivan/
 s/^szhang$/Sai Zhang/
 s/^tamier$/Mier Ta/
+s/^nod694$/Hamed Taghani/
 s/^ten3$/Tatyana Nikolova/
 s/^todd.schiller$/Todd Schiller/
 s/^tohn$/Toh Ne Win/
