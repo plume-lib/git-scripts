@@ -2,7 +2,8 @@
 # bash, not POSIX sh, because of "readarray".
 
 echo "Please use the program in https://github.com/plume-lib/merging ."
-echo "You are using an obsolete $0 from https://github.com/plume-lib/git-scripts ."
+echo "You are using $0,"
+echo "which is an obsolete version in https://github.com/plume-lib/git-scripts ."
 
 # This script edits files in place to resolve conflict markers due to edits on
 # adjacent lines.  (This is like the behavior of SVN and darcs, but different
