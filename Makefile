@@ -11,12 +11,12 @@ check-style: check-python-style shell-script-style
 PYTHON_FILES=$(wildcard *.py)
 
 python-style:
-	black ${PYTHON_FILES}
-	pylint -f parseable --disable=W,invalid-name ${PYTHON_FILES}
+	ruff format ${PYTHON_FILES}
+	ruff check ${PYTHON_FILES} --fix
 
 check-python-style:
-	black ${PYTHON_FILES} --check
-	pylint -f parseable --disable=W,invalid-name ${PYTHON_FILES}
+	ruff format ${PYTHON_FILES}
+	ruff check ${PYTHON_FILES} --fix
 
 SH_SCRIPTS = $(shell grep -r -l '^\#!/bin/sh' * | grep -v .git | grep -v "~" | grep -v cronic-orig)
 BASH_SCRIPTS = $(shell grep -r -l '^\#!/bin/bash' * | grep -v .git | grep -v "~" | grep -v cronic-orig)
