@@ -54,6 +54,7 @@ s/^dbrosoft$/Dan Brown/
 s/^dodoo$/Nii Dodoo/
 s/^drayside$/Derek Rayside/
 s/^emarcus$/Emily Marcus/
+s/^erfan-arvan$/Erfan Arvan/
 s/^falaina$/Robert Rudd/
 s/^felly$/Eric Fellheimer/
 s/^flo2702$/Florian Lanzinger/
@@ -144,7 +145,8 @@ s/^yoav.zibin$/Yoav Zibin/
 s/^yuriy.brun$/Yuriy Brun/
 s/^zcai$/Zhiping Cai/
 s/^zhangjiangqige$/Jiangqi Zhang/
-s/^erfan-arvan$/Erfan Arvan/
+
+# Add your GitHub username in alphabetical order, not here at the end.
 
 /^daikonbuildtest$/d
 /^daikongroupmember$/d
