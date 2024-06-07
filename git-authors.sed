@@ -144,6 +144,7 @@ s/^yoav.zibin$/Yoav Zibin/
 s/^yuriy.brun$/Yuriy Brun/
 s/^zcai$/Zhiping Cai/
 s/^zhangjiangqige$/Jiangqi Zhang/
+s/^erfan-arvan$/Erfan Arvan/
 
 /^daikonbuildtest$/d
 /^daikongroupmember$/d
