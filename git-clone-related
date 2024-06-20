@@ -93,6 +93,9 @@ if [ -d "${DESTINATION}" ]; then
   # In a Travis pull request, a repository can be in state "(HEAD detached at b475d58d)"
   # and "git pull" fails.
   (cd "${DESTINATION}" && (git pull -q || (git branch && true)))
+elif [ -e "${DESTINATION}" ]; then
+  echo "git-clone-related: destination ${DESTINATION} exists and is not a directory"
+  exit 1
 else
   SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
 
@@ -144,9 +147,9 @@ else
     REPO_URL="$UPSTREAM_REPO_URL"
     REPO_BRANCH=$("${SCRIPTDIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
   fi
-  echo "git clone -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
+  echo "About to run: git clone -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.
   timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
-    || (sleep 60 && timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}")
+    || (sleep 60 && (timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" || exit 1))
 fi
 echo "git-clone-related: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
