@@ -67,6 +67,7 @@ s/^gustavo$/Gustavo Santos/
 s/^hunkim$/Sung Kim/
 s/^iuliuv$/Iuliu Vasilescu/
 s/^Ivan-Kocherhin$/Ivan Kocherhin/
+s/^iywang2016$/Ivory Wang/
 s/^jaimeq$/Jaime Quinonez/
 s/^jake$/Jake Cockrell/
 s/^jburke$/Jonathan Burke/
