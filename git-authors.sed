@@ -154,6 +154,7 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^daikonuser$/d
 /^convert-repo$/d
 /^student$/d
+/^hello$/d
 
 /^doc\/index.html$/d
 
