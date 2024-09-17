@@ -150,6 +150,9 @@ else
   echo "About to run: git clone -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.
   timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
-    || (sleep 60 && (timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" || exit 1))
+    || { sleep 60 \
+         && { timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+              || { echo "git-clone-related: failed: git clone --depth 1 -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}";
+                   exit 2; } } }
 fi
 echo "git-clone-related: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
