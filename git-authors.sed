@@ -16,6 +16,7 @@ s/^Ivan-Kocherhin$/Ivan Kocherhin/
 s/^J Luo$/Jeff Luo/
 s/^Jck$/Shuqi Lin/
 s/^Jianchu$/Jianchu Li/
+s/^Johnny$/JohnnyJayJay/
 s/^JonathanGBurke$/Jonathan Burke/
 s/^Kenn Knowles/Kenneth Knowles/
 s/^LS@WATER$/Lian Sun/
