@@ -138,6 +138,7 @@ s/^tschiller$/Todd Schiller/
 s/^tws$/Todd Schiller/
 s/^txiang61$/Jenny Xiang/
 s/^utsavoza$/Utsav Oza/
+s/^vaidikcode$/Vaidik Bhardwaj/
 s/^vananiev$/Vitalii Ananiev/
 s/^vkm$/Vikash Mansinghka/
 s/^wdietl$/Werner Dietl/
