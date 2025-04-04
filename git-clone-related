@@ -95,6 +95,7 @@ if [ -d "${DESTINATION}" ]; then
   (cd "${DESTINATION}" && (git pull -q || (git branch && true)))
 elif [ -e "${DESTINATION}" ]; then
   echo "git-clone-related: destination ${DESTINATION} exists and is not a directory"
+  file "${DESTINATION}"
   exit 1
 else
   SCRIPTDIR="$(cd "$(dirname "$0")" && pwd -P)"
@@ -150,7 +151,9 @@ else
   echo "About to run: git clone -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.
   timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
-    || { sleep 60 \
+    || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
+         && rm -rf "${DESTINATION}" \
+         && sleep 60 \
          && { timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
               || { echo "git-clone-related: failed: git clone --depth 1 -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}";
                    exit 2; } } }
