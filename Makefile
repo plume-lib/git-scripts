@@ -6,7 +6,9 @@ test:
 clean:
 	${MAKE} -C tests clean
 
-check-style: python-style-check shell-style-check
+style-fix: python-style-fix shell-style-fix
+style-check: python-style-check shell-style-check
+
 
 PYTHON_FILES=$(wildcard *.py)
 
@@ -22,11 +24,11 @@ SH_SCRIPTS = $(shell grep -r -l '^\#!/bin/sh' * | grep -v .git | grep -v "~" | g
 BASH_SCRIPTS = $(shell grep -r -l '^\#!/bin/bash' * | grep -v .git | grep -v "~" | grep -v cronic-orig)
 
 shell-style-fix:
-	shfmt -w -i 2 -ci -bn ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	shfmt -w -i 2 -ci -bn -sr ${SH_SCRIPTS} ${BASH_SCRIPTS}
 	shellcheck -x -P SCRIPTDIR --format=diff ${SH_SCRIPTS} ${BASH_SCRIPTS} | patch -p1
 
 shell-style-check:
-	shfmt -d -i 2 -ci -bn ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	shfmt -d -i 2 -ci -bn -sr ${SH_SCRIPTS} ${BASH_SCRIPTS}
 	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
 	checkbashisms -l ${SH_SCRIPTS} /dev/null
 
