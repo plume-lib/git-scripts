@@ -6,15 +6,15 @@ test:
 clean:
 	${MAKE} -C tests clean
 
-check-style: check-python-style shell-script-style
+check-style: python-style-check shell-style-check
 
 PYTHON_FILES=$(wildcard *.py)
 
-python-style:
+python-style-fix:
 	ruff format ${PYTHON_FILES}
 	ruff check ${PYTHON_FILES} --fix
 
-check-python-style:
+python-style-check:
 	ruff format ${PYTHON_FILES}
 	ruff check ${PYTHON_FILES} --fix
 
