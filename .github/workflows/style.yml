@@ -14,11 +14,11 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11.5'
+        python-version: '3.13.3'
     - run: python --version
     - name: Install Python programs
       run: pip install ruff
     - name: Install shellcheck and checkbashisms
-      run: sudo apt install shellcheck devscripts
+      run: sudo apt install shfmt shellcheck devscripts
     - name: Check style
       run: make check-style
