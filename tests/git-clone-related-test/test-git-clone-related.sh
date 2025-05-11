@@ -37,12 +37,12 @@ clonedbranch=$(git -C "$goaldir" rev-parse --abbrev-ref HEAD)
 
 rm -rf "$startdir" "$goaldir"
 
-if [ "$clonedrepo" != "$GOAL_REPO" ] ; then
+if [ "$clonedrepo" != "$GOAL_REPO" ]; then
     echo "test-git-clone-related \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
     echo "expected repo $GOAL_REPO, got: $clonedrepo"
     exit 2
 fi
-if [ "$clonedbranch" != "$GOAL_BRANCH" ] ; then
+if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
     echo "test-git-clone-related \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
     echo "expected branch $GOAL_BRANCH, got: $clonedbranch"
     exit 2

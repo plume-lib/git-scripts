@@ -41,7 +41,7 @@ _MKTEMP="/bin/mktemp"
 _LOCAL=${1}
 _REMOTE=${2}
 _MERGED=${3}
-if [ -r "${4}" ] ; then
+if [ -r "${4}" ]; then
     _BASE=${4}
     _EDIFF=ediff-merge-files-with-ancestor
     _EVAL="(${_EDIFF} \"${_LOCAL}\" \"${_REMOTE}\" \"${_BASE}\" nil \"${_MERGED}\")"
