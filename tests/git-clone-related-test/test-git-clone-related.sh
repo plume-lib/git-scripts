@@ -28,8 +28,14 @@ goaldir=$(mktemp -d 2>/dev/null || mktemp -d -t 'goaldir')
 rm -rf "$startdir" "$goaldir"
 
 git clone --branch "$START_BRANCH" "$START_REPO" "$startdir" -q --single-branch --depth 1
-# $ARGS should not be quoted
-# shellcheck disable=SC2086
+# This test might itself be running under CI, so unset the variables that
+# `ci-info` examines.
+unset SYSTEM_PULLREQUEST_TARGETBRANCH;
+unset BUILD_SOURCEBRANCH
+unset TRAVIS
+unset CIRCLE_COMPARE_URL
+unset GITHUB_HEAD_REF
+# shellcheck disable=SC2086  # $ARGS should not be quoted
 (cd "$startdir" && "${PLUME_SCRIPTS}"/git-clone-related $ARGS "$goaldir")
 clonedrepo=$(git -C "$goaldir" config --get remote.origin.url)
 # git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
@@ -38,12 +44,12 @@ clonedbranch=$(git -C "$goaldir" rev-parse --abbrev-ref HEAD)
 rm -rf "$startdir" "$goaldir"
 
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
-    echo "test-git-clone-related \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+    echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
     echo "expected repo $GOAL_REPO, got: $clonedrepo"
     exit 2
 fi
 if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
-    echo "test-git-clone-related \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+    echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
     echo "expected branch $GOAL_BRANCH, got: $clonedbranch"
     exit 2
 fi
