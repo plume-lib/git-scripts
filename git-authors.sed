@@ -11,6 +11,7 @@ s/^CharlesZ-Chen$/Charles Chen/
 s/^ChristosToxiadis$/Chris Toxiadis/
 s/^Colin Gordon$/Colin S. Gordon/
 s/^Colin Stebbins Gordon$/Colin S. Gordon/
+s/^Damika-Anupama$/Damika Anupama/
 s/^Haaris710$/Haaris Ahmed/
 s/^Ivan-Kocherhin$/Ivan Kocherhin/
 s/^J Luo$/Jeff Luo/
