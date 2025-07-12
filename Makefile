@@ -10,7 +10,7 @@ style-fix: python-style-fix shell-style-fix
 style-check: python-style-check python-typecheck shell-style-check
 
 
-PYTHON_FILES=$(wildcard *.py)
+PYTHON_FILES:=$(wildcard *.py)
 install-mypy:
 	@if ! command -v mypy ; then pip install mypy ; fi
 install-ruff:
