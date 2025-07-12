@@ -1,4 +1,4 @@
-all: test check-style
+all: test style-check
 
 test:
 	${MAKE} -C tests test
