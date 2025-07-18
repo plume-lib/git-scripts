@@ -165,5 +165,6 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 
 /^dependabot-preview\[bot\]$/d
 /^dependabot\[bot\]$/d
+/^Copilot$/d
 
 /^unknown$/d
