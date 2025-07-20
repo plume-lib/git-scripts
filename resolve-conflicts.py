@@ -75,7 +75,7 @@ def main() -> None:  # pylint: disable=too-many-locals
         print("resolve-conflicts.py: supply exactly one option.")
         sys.exit(1)
 
-    with Path.open(filename) as file:
+    with Path(filename).open() as file:
         lines = file.readlines()
 
     # Exit status 0 means no conflicts remain, 1 means some merge conflict remains.
