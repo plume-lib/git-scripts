@@ -11,17 +11,13 @@ style-check: python-style-check python-typecheck shell-style-check
 
 
 PYTHON_FILES:=$(wildcard *.py)
-install-mypy:
-	@if ! command -v mypy ; then pip install mypy ; fi
-install-ruff:
-	@if ! command -v ruff ; then pipx install ruff ; fi
-python-style-fix: install-ruff
+python-style-fix:
 	@ruff format ${PYTHON_FILES}
 	@ruff -q check ${PYTHON_FILES} --fix
-python-style-check: install-ruff
+python-style-check:
 	@ruff -q format --check ${PYTHON_FILES}
 	@ruff -q check ${PYTHON_FILES}
-python-typecheck: install-mypy
+python-typecheck:
 	@mypy --strict ${PYTHON_FILES} > /dev/null 2>&1 || true
 	@mypy --install-types --non-interactive
 	mypy --strict --ignore-missing-imports ${PYTHON_FILES}
