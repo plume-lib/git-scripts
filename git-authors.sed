@@ -160,6 +160,7 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^convert-repo$/d
 /^student$/d
 /^hello$/d
+/^coderabbitai\[bot\]$/d
 
 /^doc\/index.html$/d
 
