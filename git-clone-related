@@ -114,7 +114,7 @@ else
     CI_INFO="$SCRIPT_DIR/.plume-scripts/ci-info"
   fi
   if [ ! -f "$CI_INFO" ]; then
-    (cd "$SCRIPT_DIR" && git clone --depth 1 https://github.com/plume-lib/plume-scripts .plume-scripts)
+    (cd "$SCRIPT_DIR" && git clone -q --depth 1 https://github.com/plume-lib/plume-scripts .plume-scripts)
   fi
   if [ ! -f "$CI_INFO" ]; then
     echo "CI_INFO does not exist: $CI_INFO"
@@ -154,15 +154,15 @@ else
     REPO_URL="$UPSTREAM_REPO_URL"
     REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
   fi
-  echo "About to run: git clone -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
+  echo "About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.
-  timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+  timeout 60 git clone -q --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
       && rm -rf "${DESTINATION}" \
       && sleep 60 \
-      && { timeout 60 git clone --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+      && { timeout 60 git clone -q --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
         || {
-          echo "git-clone-related: failed: git clone --depth 1 -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
+          echo "git-clone-related: failed: git clone -q --depth 1 -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
           exit 2
         }; }; }
 fi
