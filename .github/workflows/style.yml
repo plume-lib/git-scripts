@@ -7,22 +7,22 @@ jobs:
         shell: bash -l {0}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 1
-        show-progress: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.14.0'
-    - run: python --version
-    - name: Install Python programs
-      run: |
-        pip install mypy
-        pip install ruff
-    - name: Install shellcheck and checkbashisms
-      run: |
-        sudo apt-get update
-        sudo apt install shfmt shellcheck devscripts
-    - name: Check style
-      run: make style-check
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14.0'
+      - run: python --version
+      - name: Install Python programs
+        run: |
+          pip install mypy
+          pip install ruff
+      - name: Install shellcheck and checkbashisms
+        run: |
+          sudo apt-get update
+          sudo apt install shfmt shellcheck devscripts
+      - name: Check style
+        run: make style-check
