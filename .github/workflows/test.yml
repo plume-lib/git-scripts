@@ -7,16 +7,16 @@ jobs:
       run:
         shell: bash -l {0}
     steps:
-    - uses: actions/checkout@v5
-      with:
-        fetch-depth: 1
-        show-progress: false
-    - name: Set up Python
-      uses: actions/setup-python@v6
-      with:
-        python-version: '3.14.0'
-    - name: Run tests
-      run: |
-        git config --global user.email "example@example.com"
-        git config --global user.name "Example Example"
-        make test
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+          show-progress: false
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14.0'
+      - name: Run tests
+        run: |
+          git config --global user.email "example@example.com"
+          git config --global user.name "Example Example"
+          make test
