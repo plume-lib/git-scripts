@@ -38,6 +38,7 @@ s/^Sadaf$/Sadaf Tajik/
 s/^SnowOnion$/Sonion Lee/
 s/^Vlastimil$/Vlastimil Dort/
 s/^W. Dietl$/Werner Dietl/
+s/^YukiYang31$/Yuki Yang/
 s/^abslamp$/Lian Sun/
 s/^aditya3434$/Aditya Singh/
 s/^adonovan$/Alan Donovan/
