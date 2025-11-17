@@ -153,7 +153,9 @@ s/^yuriy.brun$/Yuriy Brun/
 s/^zcai$/Zhiping Cai/
 s/^zhangjiangqige$/Jiangqi Zhang/
 
-# Add your GitHub username in alphabetical order, not here at the end.
+# Add your GitHub username in alphabetical order above, not here at the end.
+
+# Test users.
 
 /^daikonbuildtest$/d
 /^daikongroupmember$/d
@@ -161,12 +163,15 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^convert-repo$/d
 /^student$/d
 /^hello$/d
-/^coderabbitai\[bot\]$/d
 
 /^doc\/index.html$/d
+
+# Bots
 
 /^dependabot-preview\[bot\]$/d
 /^dependabot\[bot\]$/d
 /^Copilot$/d
+/^coderabbitai\[bot\]$/d
+/^Claude$/d
 
 /^unknown$/d
