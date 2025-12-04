@@ -22,7 +22,7 @@ jobs:
           pip install ruff
       - name: Install shellcheck and checkbashisms
         run: |
-          sudo apt-get update
-          sudo apt install shfmt shellcheck devscripts
+          sudo apt update
+          sudo apt -y install shfmt shellcheck devscripts
       - name: Check style
         run: make style-check
