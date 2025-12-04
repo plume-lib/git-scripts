@@ -17,14 +17,14 @@ PYTHON_FILES:=$(wildcard **/*.py) $(shell grep -r -l --exclude='*.py' --exclude=
 python-style-fix:
 ifneq (${PYTHON_FILES},)
 #	@uvx ruff --version
-	@uvx ruff -q format ${PYTHON_FILES}
-	@uvx ruff -q check ${PYTHON_FILES} --fix
+	@uvx ruff format ${PYTHON_FILES}
+	@uvx ruff check ${PYTHON_FILES} --fix
 endif
 python-style-check:
 ifneq (${PYTHON_FILES},)
 #	@uvx ruff --version
-	@uvx ruff -q format --check ${PYTHON_FILES}
-	@uvx ruff -q check ${PYTHON_FILES}
+	@uvx ruff format --check ${PYTHON_FILES}
+	@uvx ruff check ${PYTHON_FILES}
 endif
 python-typecheck:
 ifneq (${PYTHON_FILES},)
