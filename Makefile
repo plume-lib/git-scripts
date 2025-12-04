@@ -6,36 +6,60 @@ test:
 clean:
 	${MAKE} -C tests clean
 
+# Dependencies defined below.
 style-fix: python-style-fix shell-style-fix
 style-check: python-style-check python-typecheck shell-style-check
 
 
-PYTHON_FILES:=$(wildcard *.py)
+style-fix: python-style-fix
+style-check: python-style-check python-typecheck
+PYTHON_FILES:=$(wildcard **/*.py) $(shell grep -r -l --exclude='*.py' --exclude='#*' --exclude='*~' --exclude='*.tar' --exclude=gradlew --exclude=lcb_runner --exclude-dir=.git --exclude-dir=.venv '^\#! \?\(/bin/\|/usr/bin/\|/usr/bin/env \)python')
 python-style-fix:
-	@ruff format ${PYTHON_FILES}
-	@ruff -q check ${PYTHON_FILES} --fix
+ifneq (${PYTHON_FILES},)
+#	@uvx ruff --version
+	@uvx ruff -q format ${PYTHON_FILES}
+	@uvx ruff -q check ${PYTHON_FILES} --fix
+endif
 python-style-check:
-	@ruff -q format --check ${PYTHON_FILES}
-	@ruff -q check ${PYTHON_FILES}
+ifneq (${PYTHON_FILES},)
+#	@uvx ruff --version
+	@uvx ruff -q format --check ${PYTHON_FILES}
+	@uvx ruff -q check ${PYTHON_FILES}
+endif
 python-typecheck:
-	@mypy --strict ${PYTHON_FILES} > /dev/null 2>&1 || true
-	@mypy --install-types --non-interactive
-	mypy --strict --ignore-missing-imports ${PYTHON_FILES}
-
-SH_SCRIPTS = $(shell grep -r -l '^\#!/bin/sh' * | grep -v .git | grep -v "~" | grep -v cronic-orig)
-BASH_SCRIPTS = $(shell grep -r -l '^\#!/bin/bash' * | grep -v .git | grep -v "~" | grep -v cronic-orig)
-
-shell-style-fix:
-	shfmt -w -i 2 -ci -bn -sr ${SH_SCRIPTS} ${BASH_SCRIPTS}
-	shellcheck -x -P SCRIPTDIR --format=diff ${SH_SCRIPTS} ${BASH_SCRIPTS} | patch -p1
-
-shell-style-check:
-	shfmt -d -i 2 -ci -bn -sr ${SH_SCRIPTS} ${BASH_SCRIPTS}
-	shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
-	checkbashisms -l ${SH_SCRIPTS} /dev/null
-
-showvars:
+ifneq (${PYTHON_FILES},)
+	@uv run ty check -q
+endif
+showvars::
 	@echo "PYTHON_FILES=${PYTHON_FILES}"
+
+
+style-fix: shell-style-fix
+style-check: shell-style-check
+SH_SCRIPTS   := $(shell grep -r -l --exclude='#*' --exclude='*~' --exclude='*.tar' --exclude=gradlew --exclude-dir=.git '^\#! \?\(/bin/\|/usr/bin/env \)sh'   | grep -v addrfilter | grep -v cronic-orig | grep -v mail-stackoverflow.sh)
+BASH_SCRIPTS := $(shell grep -r -l --exclude='#*' --exclude='*~' --exclude='*.tar' --exclude=gradlew --exclude-dir=.git '^\#! \?\(/bin/\|/usr/bin/env \)bash' | grep -v addrfilter | grep -v cronic-orig | grep -v mail-stackoverflow.sh)
+CHECKBASHISMS := $(shell if command -v checkbashisms > /dev/null ; then \
+   echo "checkbashisms" ; \
+ else \
+   wget -q -N https://homes.cs.washington.edu/~mernst/software/checkbashisms && \
+   mv checkbashisms .checkbashisms && \
+   chmod +x ./.checkbashisms && \
+   echo "./.checkbashisms" ; \
+ fi)
+shell-style-fix:
+ifneq ($(SH_SCRIPTS)$(BASH_SCRIPTS),)
+	@shfmt -w -i 2 -ci -bn -sr ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	@shellcheck -x -P SCRIPTDIR --format=diff ${SH_SCRIPTS} ${BASH_SCRIPTS} | patch -p1
+endif
+shell-style-check:
+ifneq ($(SH_SCRIPTS)$(BASH_SCRIPTS),)
+	@shfmt -d -i 2 -ci -bn -sr ${SH_SCRIPTS} ${BASH_SCRIPTS}
+	@shellcheck -x -P SCRIPTDIR --format=gcc ${SH_SCRIPTS} ${BASH_SCRIPTS}
+endif
+ifneq ($(SH_SCRIPTS),)
+	@${CHECKBASHISMS} -l ${SH_SCRIPTS}
+endif
+showvars::
 	@echo "SH_SCRIPTS=${SH_SCRIPTS}"
 	@echo "BASH_SCRIPTS=${BASH_SCRIPTS}"
 

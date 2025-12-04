@@ -22,15 +22,15 @@ set -o errexit -o nounset
 # set -v : Display shell input lines as they are read.
 
 USER=${USER:-git-clone-related}
-PLUME_SCRIPTS=$(cd ../../; pwd -P)
-startdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'startdir')
-goaldir=$(mktemp -d 2>/dev/null || mktemp -d -t 'goaldir')
+PLUME_SCRIPTS=$(cd ../../ && pwd -P)
+startdir=$(mktemp -d 2> /dev/null || mktemp -d -t 'startdir')
+goaldir=$(mktemp -d 2> /dev/null || mktemp -d -t 'goaldir')
 rm -rf "$startdir" "$goaldir"
 
 git clone --branch "$START_BRANCH" "$START_REPO" "$startdir" -q --single-branch --depth 1
 # This test might itself be running under CI, so unset the variables that
 # `ci-info` examines.
-unset SYSTEM_PULLREQUEST_TARGETBRANCH;
+unset SYSTEM_PULLREQUEST_TARGETBRANCH
 unset BUILD_SOURCEBRANCH
 unset TRAVIS
 unset CIRCLE_COMPARE_URL
@@ -43,13 +43,13 @@ clonedbranch=$(git -C "$goaldir" rev-parse --abbrev-ref HEAD)
 
 rm -rf "$startdir" "$goaldir"
 
-if [ "$clonedrepo" != "$GOAL_REPO" ] ; then
-    echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-    echo "expected repo $GOAL_REPO, got: $clonedrepo"
-    exit 2
+if [ "$clonedrepo" != "$GOAL_REPO" ]; then
+  echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  echo "expected repo $GOAL_REPO, got: $clonedrepo"
+  exit 2
 fi
-if [ "$clonedbranch" != "$GOAL_BRANCH" ] ; then
-    echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-    echo "expected branch $GOAL_BRANCH, got: $clonedbranch"
-    exit 2
+if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
+  echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  echo "expected branch $GOAL_BRANCH, got: $clonedbranch"
+  exit 2
 fi
