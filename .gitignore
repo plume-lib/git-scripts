@@ -1,7 +1,5 @@
+# Obtained via Git
 .plume-scripts
-.markdownlint-cli2.yaml
-.pymarkdown
-.ruff.toml
 
 tests/**/Merged*.diff
 tests/**/Merged*.java
