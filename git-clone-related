@@ -160,9 +160,9 @@ else
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
       && rm -rf "${DESTINATION}" \
       && sleep 60 \
-      && { timeout 60 git clone -q --depth 1 -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+      && { timeout 60 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
         || {
-          echo "git-clone-related: failed: git clone -q --depth 1 -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
+          echo "git-clone-related: failed: git clone -q -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
           exit 2
         }; }; }
 fi
