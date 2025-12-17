@@ -155,12 +155,12 @@ else
     REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
   fi
   echo "About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
-  # Try twice in case of network lossage.
-  timeout 60 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+  # Try twice in case of network lossage.  60 seconds is not enough for a branch of the JDK.
+  timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
       && rm -rf "${DESTINATION}" \
-      && sleep 60 \
-      && { timeout 60 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
+      && sleep 180 \
+      && { timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
         || {
           echo "git-clone-related: failed: git clone -q -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
           exit 2
