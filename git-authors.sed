@@ -4,6 +4,7 @@
 # TODO: It might be better to match against full email address rather than
 # just the id before the "@".
 
+s/^Ankit$/Ankit Yadav/
 s/^Bohdan$/Bohdan Sharipov/
 s/^Carlos$/Carlos Pacheco/
 s/^Charles Chen Charleszhuochen@gmail.com$/Charles Chen/
