@@ -57,7 +57,7 @@ if [ "$1" = "--upstream-branch" ]; then
 fi
 
 if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 UPSTREAM_ORG REPO [DESTINATION] [GIT_CLONE_ARGS...]" >&2
+  echo "Usage: $(basename -- "$0") UPSTREAM_ORG REPO [DESTINATION] [GIT_CLONE_ARGS...]" >&2
   exit 1
 fi
 
