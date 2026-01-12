@@ -57,7 +57,7 @@ if [ "$1" = "--upstream-branch" ]; then
 fi
 
 if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 UPSTREAM_ORG REPO [DESTINATION] [GIT_CLONE_ARGS...]" >&2
+  echo "Usage: $0 UPSTREAM_ORG REPO_NAME [DESTINATION] [GIT_CLONE_ARGS...]" >&2
   exit 1
 fi
 
@@ -155,7 +155,7 @@ else
     REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
   fi
   echo "About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
-  # Try twice in case of network lossage.  60 seconds is not enough for a branch of the JDK.
+  # Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
   timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
       && rm -rf "${DESTINATION}" \
@@ -166,4 +166,5 @@ else
           exit 2
         }; }; }
 fi
-echo "git-clone-related: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
+
+echo "$0: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"

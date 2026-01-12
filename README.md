@@ -37,6 +37,11 @@ A script for use as a git mergetool; runs Emacs ediff as the mergetool.
 Lists all the authors of commits in a git repository.
 [Documentation](git-authors) at top of file.
 
+### git-clone-or-pull
+
+Either clones a repository, or pulls it if it is already cloned.
+[Documentation](git-clone-or-pull) at top of file.
+
 ### git-clone-related
 
 Clones a repository related to the one where this script is called, trying
