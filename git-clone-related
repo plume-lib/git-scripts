@@ -56,8 +56,10 @@ if [ "$1" = "--upstream-branch" ]; then
   shift
 fi
 
+SCRIPT_NAME="$(basename "$0")"
+
 if [ "$#" -lt 2 ]; then
-  echo "Usage: $0 UPSTREAM_ORG REPO_NAME [DESTINATION] [GIT_CLONE_ARGS...]" >&2
+  echo "Usage: ${SCRIPT_NAME} UPSTREAM_ORG REPO_NAME [DESTINATION] [GIT_CLONE_ARGS...]" >&2
   exit 1
 fi
 
@@ -167,4 +169,4 @@ else
         }; }; }
 fi
 
-echo "$0: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
+echo "${SCRIPT_NAME}: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
