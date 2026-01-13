@@ -2,7 +2,7 @@
 
 # git-clone-or-pull:  clone a GitHub repository, or pull it if already cloned.
 #
-# Usage: git-clone-or-pull ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS]
+# Usage: git-clone-or-pull ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS...]
 #   ORG is the GitHub organization
 #   REPO_NAME is the repository name (without the organization)
 #   DESTINATION_PARENT is the directory that contains the clone directory.  It
