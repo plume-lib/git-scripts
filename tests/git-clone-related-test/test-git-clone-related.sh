@@ -48,12 +48,12 @@ clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
 clonedbranch=$(git -C "$resultdir" rev-parse --abbrev-ref HEAD)
 
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
-  echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-  echo "expected repo $GOAL_REPO, got $clonedrepo, in $resultdir"
+  echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  echo "error: expected repo $GOAL_REPO, got: $clonedrepo, in $resultdir"
   exit 2
 fi
 if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
-  echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
   echo "expected branch $GOAL_BRANCH, got $clonedbranch, in $resultdir"
   exit 2
 fi

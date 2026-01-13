@@ -59,7 +59,7 @@ fi
 SCRIPTNAME="$(basename "$0")"
 
 if [ "$#" -lt 2 ]; then
-  echo "Usage: ${SCRIPTNAME} UPSTREAM_ORG REPO [DESTINATION] [GIT_CLONE_ARGS...]" >&2
+  echo "Usage: ${SCRIPTNAME} UPSTREAM_ORG REPO_NAME [DESTINATION] [GIT_CLONE_ARGS...]" >&2
   exit 1
 fi
 
@@ -175,7 +175,7 @@ else
     fi
   fi
   echo "${SCRIPTNAME}: About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
-  # Try twice in case of network lossage.  60 seconds is not enough for a branch of the JDK.
+  # Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
   timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
       && rm -rf "${DESTINATION}" \
@@ -186,4 +186,5 @@ else
           exit 2
         }; }; }
 fi
+
 echo "${SCRIPTNAME}: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
