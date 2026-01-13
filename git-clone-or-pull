@@ -49,9 +49,12 @@ if test -d "${DESTINATION}"; then
 else
   mkdir -p "${DESTINATION_PARENT}"
   if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
-    rm -rf "${DESTINATION:?}/${REPO_NAME}"
+    rm -rf "${DESTINATION}"
     sleep 180
-    timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"
+    if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
+      echo "Failed to clone ${REPO_URL}"
+      exit 1
+    fi
   fi
 fi
 
