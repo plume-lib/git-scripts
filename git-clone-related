@@ -56,6 +56,7 @@ if [ "$1" = "--upstream-branch" ]; then
   shift
 fi
 
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
 SCRIPT_NAME=$(basename -- "$0")
 
 if [ "$#" -lt 2 ]; then
@@ -76,12 +77,12 @@ if [ "$#" -ne 0 ] && ! beginswith "-" "$1"; then
     cd "$DESTINATION"
     pwd -P
   )" ]; then
-    echo "git-clone-related: destination is same as current directory"
+    echo "${SCRIPT_NAME}: destination is same as current directory"
     exit 1
   fi
 else
   if [ "${REPO_NAME}" = "${PWD##*/}" ]; then
-    echo "git-clone-related: provide a destination argument"
+    echo "${SCRIPT_NAME}: provide a destination argument"
     exit 1
   fi
   DESTINATION=../${REPO_NAME}
@@ -91,23 +92,21 @@ if [ "$#" -eq 0 ]; then
 fi
 
 if [ -n "$DEBUG" ]; then
-  echo "Entering git-clone-related $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
+  echo "Entering ${SCRIPT_NAME} $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
 fi
 
 echo "In directory $(pwd) :"
 if [ -d "${DESTINATION}" ]; then
-  echo "git-clone-related: destination ${DESTINATION} exists; pulling"
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists; pulling"
   # Use "cd" because older versions of git (eg, CircleCI) don't support the -C command-line option.
   # In a Travis pull request, a repository can be in state "(HEAD detached at b475d58d)"
   # and "git pull" fails.
   (cd "${DESTINATION}" && (git pull -q || (git branch && true)))
 elif [ -e "${DESTINATION}" ]; then
-  echo "git-clone-related: destination ${DESTINATION} exists and is not a directory"
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists and is not a directory"
   file "${DESTINATION}"
   exit 1
 else
-  SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
-
   CI_INFO="$SCRIPT_DIR/../plume-scripts/ci-info"
   if [ ! -f "$CI_INFO" ]; then
     CI_INFO="$SCRIPT_DIR/../.plume-scripts/ci-info"
@@ -124,39 +123,45 @@ else
   fi
 
   if [ -n "$DEBUG" ]; then
-    echo "About to run ci-info --debug"
+    echo "${SCRIPT_NAME}: About to run: ci-info --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
-    echo "Ran ci-info --debug"
-    echo "About to run ci-info"
+    echo "${SCRIPT_NAME}: Done: ci-info --debug"
+    echo "${SCRIPT_NAME}: About to run: ci-info"
   fi
 
   eval "$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ]; then
-    echo "Finished running ci-info"
+    echo "${SCRIPT_NAME}: Finished running ci-info"
   fi
   UPSTREAM_REPO_URL="https://github.com/${UPSTREAM_ORG}/${REPO_NAME}.git"
 
   if [ -n "$DEBUG" ]; then
-    echo "About to run git-find-fork" "${CI_ORGANIZATION}" "${UPSTREAM_ORG}" "${REPO_NAME}"
+    echo "${SCRIPT_NAME}: About to run: git-find-fork" "${CI_ORGANIZATION}" "${UPSTREAM_ORG}" "${REPO_NAME}"
   fi
   # REPO_URL is what will be cloned.  It might be the same as UPSTREAM_REPO_URL.
   REPO_URL=$("${SCRIPT_DIR}"/git-find-fork "${CI_ORGANIZATION}" "${UPSTREAM_ORG}" "${REPO_NAME}")
   if [ -n "$DEBUG" ]; then
-    echo "git-find-fork ${CI_ORGANIZATION} ${UPSTREAM_ORG} ${REPO_NAME} => ${REPO_URL}"
+    echo "${SCRIPT_NAME}: Done: git-find-fork ${CI_ORGANIZATION} ${UPSTREAM_ORG} ${REPO_NAME} => ${REPO_URL}"
   fi
   if [ -n "$DEBUG" ]; then
-    echo "About to run git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
+    echo "${SCRIPT_NAME}: About to run: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
   fi
   REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
   if [ -n "$DEBUG" ]; then
-    echo "git-find-branch ${REPO_URL} ${CI_BRANCH_NAME} => ${REPO_BRANCH}"
+    echo "${SCRIPT_NAME}: Done: git-find-branch ${REPO_URL} ${CI_BRANCH_NAME} => ${REPO_BRANCH}"
   fi
   if [ "$UPSTREAM_REPO_URL" != "$REPO_URL" ] && [ "$REPO_BRANCH" != "$CI_BRANCH_NAME" ]; then
-    ## Don't use the fallback branch (e.g., master) of the downstream repo
+    ## Don't use the fallback branch (e.g., master) of the downstream repo.
     REPO_URL="$UPSTREAM_REPO_URL"
+    if [ -n "$DEBUG" ]; then
+      echo "${SCRIPT_NAME}: About to run: git-find-branch \"${REPO_URL}\" \"${CI_BRANCH_NAME}\" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}"
+    fi
     REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
+    if [ -n "$DEBUG" ]; then
+      echo "${SCRIPT_NAME}: Done: git-find-branch \"${REPO_URL}\" \"${CI_BRANCH_NAME}\" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"} => ${REPO_BRANCH}"
+    fi
   fi
-  echo "About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
+  echo "${SCRIPT_NAME}: About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
   timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
@@ -164,7 +169,7 @@ else
       && sleep 180 \
       && { timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
         || {
-          echo "git-clone-related: failed: git clone -q -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
+          echo "${SCRIPT_NAME}: failed: git clone -q -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
           exit 2
         }; }; }
 fi

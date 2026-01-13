@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# Test one invocation of git-clone-related
+# Test one invocation of git-clone-related.
 
-# arguments:
+# Arguments:
 #  1: repo from which to run git-clone-related
 #  2: branch from which to run git-clone-related
 #  3: git-clone-related arguments
-#  4: repo that should be cloned
-#  5: branch that should be cloned
+#  4: expected repo that should be cloned
+#  5: expected branch that should be cloned
 
 START_REPO=$1
 START_BRANCH=$2
@@ -22,7 +22,8 @@ set -o errexit -o nounset
 # set -o pipefail
 # Display commands and their arguments as they are executed.
 # set -x
-# set -v : Display shell input lines as they are read.
+# Display shell input lines as they are read.
+# set -v
 
 USER=${USER:-git-clone-related}
 PLUME_SCRIPTS=$(cd ../../ && pwd -P)
@@ -46,8 +47,6 @@ clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
 # git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
 clonedbranch=$(git -C "$resultdir" rev-parse --abbrev-ref HEAD)
 
-rm -rf "$startdir" "$resultdir"
-
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
   echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
   echo "error: expected repo $GOAL_REPO, got: $clonedrepo"
@@ -58,3 +57,6 @@ if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
   echo "error: expected branch $GOAL_BRANCH, got: $clonedbranch"
   exit 2
 fi
+
+# This comes after the failure exits, so we don't clean up if the test fails.
+rm -rf "$startdir" "$resultdir"
