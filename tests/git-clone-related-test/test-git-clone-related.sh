@@ -17,15 +17,16 @@ GOAL_BRANCH=$5
 
 set -o errexit -o nounset
 # set -o pipefail
+
 # Display commands and their arguments as they are executed.
 # set -x
 # Display shell input lines as they are read.
 # set -v
 
 USER=${USER:-git-clone-related}
-PLUME_SCRIPTS=$(cd ../../ && pwd -P)
-startdir=$(mktemp -d 2> /dev/null || mktemp -d -t 'startdir')
-resultdir=$(mktemp -d 2> /dev/null || mktemp -d -t 'resultdir')
+GIT_SCRIPTS=$(cd ../../ && pwd -P)
+startdir=$(mktemp -d --tmpdir test-git-clone-related-startdir-XXXXXX 2> /dev/null || mktemp -d 2> /dev/null)
+resultdir=$(mktemp -d --tmpdir test-git-clone-related-resultdir-XXXXXX 2> /dev/null || mktemp -d 2> /dev/null)
 rm -rf "$startdir" "$resultdir"
 
 git clone --branch "$START_BRANCH" "$START_REPO" "$startdir" -q --single-branch --depth 1
@@ -37,8 +38,10 @@ unset TRAVIS
 unset CIRCLE_COMPARE_URL
 unset GITHUB_HEAD_REF
 
+echo "$0: About to run: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $ARGS $resultdir)"
 # shellcheck disable=SC2086  # $ARGS should not be quoted
-(cd "$startdir" && "${PLUME_SCRIPTS}"/git-clone-related $ARGS "$resultdir")
+(cd "$startdir" && "${GIT_SCRIPTS}"/git-clone-related $ARGS "$resultdir")
+echo "$0: Done: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $ARGS $resultdir)"
 
 clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
 # git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
@@ -46,12 +49,12 @@ clonedbranch=$(git -C "$resultdir" rev-parse --abbrev-ref HEAD)
 
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
   echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-  echo "error: expected repo $GOAL_REPO, got: $clonedrepo"
+  echo "error: expected repo $GOAL_REPO, got: $clonedrepo, in $resultdir"
   exit 2
 fi
 if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
   echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-  echo "error: expected branch $GOAL_BRANCH, got: $clonedbranch"
+  echo "expected branch $GOAL_BRANCH, got $clonedbranch, in $resultdir"
   exit 2
 fi
 
