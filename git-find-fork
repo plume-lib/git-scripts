@@ -28,7 +28,7 @@ if command -v wget > /dev/null; then
 elif command -v curl > /dev/null; then
   export GITEXISTS="curl --output /dev/null --silent --head --fail --location"
 else
-  echo "git-find-fork: Neither wget nor curl is installed"
+  echo "git-find-fork: Neither wget nor curl is installed" >&2
   exit 2
 fi
 
