@@ -18,22 +18,22 @@ if [ "$#" -lt 2 ]; then
   exit 1
 fi
 
+beginswith() { case $2 in "$1"*) true ;; *) false ;; esac }
+
 ORG=$1
 shift
 REPO_NAME=$1
 shift
 DESTINATION_PARENT=.
 if [ "$#" -ne 0 ]; then
-  case $1 in
-    "-"*) ;; # $1 starts with "-" and is probably a command-line argument.
-    *)
-      DESTINATION_PARENT=$1
-      shift
-      if [ ! -d "${DESTINATION_PARENT}" ]; then
-        mkdir -p "${DESTINATION_PARENT}"
-      fi
-      ;;
-  esac
+  if ! beginswith "-" "$1"; then
+    # Does not start with "-" and therefore isn't a command-line argument.
+    DESTINATION_PARENT=$1
+    shift
+    if [ ! -d "${DESTINATION_PARENT}" ]; then
+      mkdir -p "${DESTINATION_PARENT}"
+    fi
+  fi
 fi
 if [ "$#" -eq 0 ]; then
   # Default command-line arguments.
