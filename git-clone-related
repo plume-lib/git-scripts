@@ -56,6 +56,7 @@ if [ "$1" = "--upstream-branch" ]; then
   shift
 fi
 
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
 SCRIPT_NAME=$(basename -- "$0")
 
 if [ "$#" -lt 2 ]; then
@@ -76,12 +77,12 @@ if [ "$#" -ne 0 ] && ! beginswith "-" "$1"; then
     cd "$DESTINATION"
     pwd -P
   )" ]; then
-    echo "git-clone-related: destination is same as current directory"
+    echo "${SCRIPT_NAME}: destination is same as current directory"
     exit 1
   fi
 else
   if [ "${REPO_NAME}" = "${PWD##*/}" ]; then
-    echo "git-clone-related: provide a destination argument"
+    echo "${SCRIPT_NAME}: provide a destination argument"
     exit 1
   fi
   DESTINATION=../${REPO_NAME}
@@ -92,23 +93,20 @@ fi
 
 if [ -n "$DEBUG" ]; then
   echo "Entering ${SCRIPT_NAME} $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
-  echo "${SCRIPT_NAME}: PWD = ${PWD}"
 fi
 
 echo "In directory ${PWD} :"
 if [ -d "${DESTINATION}" ]; then
-  echo "git-clone-related: destination ${DESTINATION} exists; pulling"
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists; pulling"
   # Use "cd" because older versions of git (eg, CircleCI) don't support the -C command-line option.
   # In a Travis pull request, a repository can be in state "(HEAD detached at b475d58d)"
   # and "git pull" fails.
   (cd "${DESTINATION}" && (git pull -q || (git branch && true)))
 elif [ -e "${DESTINATION}" ]; then
-  echo "git-clone-related: destination ${DESTINATION} exists and is not a directory"
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists and is not a directory"
   file "${DESTINATION}"
   exit 1
 else
-  SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
-
   # Set PLUME_SCRIPTS.
   for dir in "../plume-scripts" ".plume-scripts" "../.plume-scripts"; do
     if [ -d "${SCRIPT_DIR}/${dir}" ]; then
