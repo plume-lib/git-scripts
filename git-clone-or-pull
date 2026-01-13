@@ -2,7 +2,7 @@
 
 # git-clone-or-pull:  clone a GitHub repository, or pull it if already cloned.
 #
-# Usage: git-clone-or-pull ORG REPO [DESTINATION_PARENT] [GIT_CLONE_ARGS]
+# Usage: git-clone-or-pull ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS]
 #   ORG is the GitHub organization
 #   REPO_NAME is the repository name (without the organization)
 #   DESTINATION_PARENT is the directory that contains the clone directory.
@@ -13,25 +13,29 @@
 SCRIPT_NAME="$(basename "$0")"
 
 if [ "$#" -lt 2 ]; then
-  echo "Usage: ${SCRIPT_NAME} ORG REPO [DESTINATION_PARENT] [GIT_CLONE_ARGS...]" >&2
+  echo "Usage: ${SCRIPT_NAME} ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS...]" >&2
   exit 1
 fi
 
 ORG=$1
 shift
-REPO_NAME=$2
+REPO_NAME=$1
 shift
-if [ "$#" -ne 0 ] && ! beginswith "-" "$1"; then
-  DESTINATION_PARENT=$1
-  shift
-  if [ ! -d "${DESTINATION_PARENT}" ]; then
-    mkdir -p "${DESTINATION_PARENT}"
-    exit 1
-  fi
-else
-  DESTINATION_PARENT=.
+DESTINATION_PARENT=.
+if [ "$#" -ne 0 ]; then
+  case $1 in
+    "-"*) ;; # $1 starts with "-" and is probably a command-line argument.
+    *)
+      DESTINATION_PARENT=$1
+      shift
+      if [ ! -d "${DESTINATION_PARENT}" ]; then
+        mkdir -p "${DESTINATION_PARENT}"
+      fi
+      ;;
+  esac
 fi
 if [ "$#" -eq 0 ]; then
+  # Default command-line arguments.
   set -- -q --single-branch --depth 1
 fi
 
@@ -43,9 +47,9 @@ if test -d "${DESTINATION}"; then
   (cd "${DESTINATION}" && (timeout 180 git pull -q || (sleep 1m && (timeout 180 git pull || true))))
 else
   mkdir -p "${DESTINATION_PARENT}"
-  if ! timeout 180 git clone -q --depth=1 "${REPO_URL}" "${DESTINATION}"; then
+  if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
     sleep 1m
-    timeout 180 git clone --depth=1 "${REPO_URL}" "${DESTINATION}"
+    timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"
   fi
 fi
 
