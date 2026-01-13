@@ -43,8 +43,6 @@ clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
 # git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
 clonedbranch=$(git -C "$resultdir" rev-parse --abbrev-ref HEAD)
 
-rm -rf "$startdir" "$resultdir"
-
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
   echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
   echo "error: expected repo $GOAL_REPO, got: $clonedrepo"
@@ -55,3 +53,6 @@ if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
   echo "error: expected branch $GOAL_BRANCH, got: $clonedbranch"
   exit 2
 fi
+
+# This comes after the failure exits, so we don't clean up if the test fails.
+rm -rf "$startdir" "$resultdir"
