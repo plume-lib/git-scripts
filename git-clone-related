@@ -154,11 +154,11 @@ else
     ## Don't use the fallback branch (e.g., master) of the downstream repo.
     REPO_URL="$UPSTREAM_REPO_URL"
     if [ -n "$DEBUG" ]; then
-      echo "${SCRIPT_NAME}: About to run: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
+      echo "${SCRIPT_NAME}: About to run: git-find-branch \"${REPO_URL}\" \"${CI_BRANCH_NAME}\" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}"
     fi
     REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
     if [ -n "$DEBUG" ]; then
-      echo "${SCRIPT_NAME}: Done: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"} => "${REPO_BRANCH}"
+      echo "${SCRIPT_NAME}: Done: git-find-branch \"${REPO_URL}\" \"${CI_BRANCH_NAME}\" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"} => ${REPO_BRANCH}"
     fi
   fi
   echo "${SCRIPT_NAME}: About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
