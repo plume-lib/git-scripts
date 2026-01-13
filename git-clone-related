@@ -130,6 +130,7 @@ else
     echo "${SCRIPT_NAME}: Done: ci-info --debug"
     echo "${SCRIPT_NAME}: About to run: ci-info"
   fi
+
   ci_info_output="$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ]; then
     echo "${SCRIPT_NAME}: Done: ci-info"
