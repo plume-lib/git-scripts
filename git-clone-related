@@ -56,10 +56,10 @@ if [ "$1" = "--upstream-branch" ]; then
   shift
 fi
 
-SCRIPTNAME="$(basename "$0")"
+SCRIPT_NAME=$(basename -- "$0")
 
 if [ "$#" -lt 2 ]; then
-  echo "Usage: ${SCRIPTNAME} UPSTREAM_ORG REPO_NAME [DESTINATION] [GIT_CLONE_ARGS...]" >&2
+  echo "Usage: ${SCRIPT_NAME} UPSTREAM_ORG REPO_NAME [DESTINATION] [GIT_CLONE_ARGS...]" >&2
   exit 1
 fi
 
@@ -91,8 +91,8 @@ if [ "$#" -eq 0 ]; then
 fi
 
 if [ -n "$DEBUG" ]; then
-  echo "Entering ${SCRIPTNAME} $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
-  echo "${SCRIPTNAME}: PWD = ${PWD}"
+  echo "Entering ${SCRIPT_NAME} $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
+  echo "${SCRIPT_NAME}: PWD = ${PWD}"
 fi
 
 echo "In directory ${PWD} :"
@@ -127,54 +127,54 @@ else
   fi
 
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: About to run: ci-info --debug"
+    echo "${SCRIPT_NAME}: About to run: ci-info --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
-    echo "${SCRIPTNAME}: Done: ci-info --debug"
-    echo "${SCRIPTNAME}: About to run: ci-info"
+    echo "${SCRIPT_NAME}: Done: ci-info --debug"
+    echo "${SCRIPT_NAME}: About to run: ci-info"
   fi
   ci_info_output="$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: Done: ci-info"
+    echo "${SCRIPT_NAME}: Done: ci-info"
     echo "---- start of ci-info output ----"
     # If `set -v` is on, the output will appear doubled, with the first copy preceded by "+ echo ".
     echo "${ci_info_output}"
     echo "---- end of ci-info output ----"
-    echo "${SCRIPTNAME}: About to eval ci-info output in ${PWD}"
+    echo "${SCRIPT_NAME}: About to eval ci-info output in ${PWD}"
   fi
 
   eval "${ci_info_output}"
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: Done: eval ci-info output in ${PWD}"
+    echo "${SCRIPT_NAME}: Done: eval ci-info output in ${PWD}"
   fi
   UPSTREAM_REPO_URL="https://github.com/${UPSTREAM_ORG}/${REPO_NAME}.git"
 
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: About to run: git-find-fork" "${CI_ORGANIZATION}" "${UPSTREAM_ORG}" "${REPO_NAME}"
+    echo "${SCRIPT_NAME}: About to run: git-find-fork" "${CI_ORGANIZATION}" "${UPSTREAM_ORG}" "${REPO_NAME}"
   fi
   # REPO_URL is what will be cloned.  It might be the same as UPSTREAM_REPO_URL.
   REPO_URL=$("${SCRIPT_DIR}"/git-find-fork "${CI_ORGANIZATION}" "${UPSTREAM_ORG}" "${REPO_NAME}")
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: Done: git-find-fork ${CI_ORGANIZATION} ${UPSTREAM_ORG} ${REPO_NAME} => ${REPO_URL}"
+    echo "${SCRIPT_NAME}: Done: git-find-fork ${CI_ORGANIZATION} ${UPSTREAM_ORG} ${REPO_NAME} => ${REPO_URL}"
   fi
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: About to run: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
+    echo "${SCRIPT_NAME}: About to run: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
   fi
   REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPTNAME}: Done: git-find-branch ${REPO_URL} ${CI_BRANCH_NAME} => ${REPO_BRANCH}"
+    echo "${SCRIPT_NAME}: Done: git-find-branch ${REPO_URL} ${CI_BRANCH_NAME} => ${REPO_BRANCH}"
   fi
   if [ "$UPSTREAM_REPO_URL" != "$REPO_URL" ] && [ "$REPO_BRANCH" != "$CI_BRANCH_NAME" ]; then
     ## Don't use the fallback branch (e.g., master) of the downstream repo.
     REPO_URL="$UPSTREAM_REPO_URL"
     if [ -n "$DEBUG" ]; then
-      echo "${SCRIPTNAME}: About to run: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
+      echo "${SCRIPT_NAME}: About to run: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"}
     fi
     REPO_BRANCH=$("${SCRIPT_DIR}"/git-find-branch "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"})
     if [ -n "$DEBUG" ]; then
-      echo "${SCRIPTNAME}: Done: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"} = > "${REPO_BRANCH}"
+      echo "${SCRIPT_NAME}: Done: git-find-branch" "${REPO_URL}" "${CI_BRANCH_NAME}" ${FALLBACK_BRANCH:+"$FALLBACK_BRANCH"} = > "${REPO_BRANCH}"
     fi
   fi
-  echo "${SCRIPTNAME}: About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
+  echo "${SCRIPT_NAME}: About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
   # Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
   timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
     || { echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}' after timeout" \
@@ -182,9 +182,9 @@ else
       && sleep 180 \
       && { timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}" \
         || {
-          echo "${SCRIPTNAME}: failed: git clone -q -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
+          echo "${SCRIPT_NAME}: failed: git clone -q -b ${REPO_BRANCH}" "$@" "${REPO_URL} ${DESTINATION}"
           exit 2
         }; }; }
 fi
 
-echo "${SCRIPTNAME}: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
+echo "${SCRIPT_NAME}: ${DESTINATION} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
