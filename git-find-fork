@@ -10,9 +10,9 @@
 # Often, you can use the `git-clone-related` script instead of this one.
 
 if [ "$#" -ne 3 ]; then
-  script=$(basename -- "$0")
-  >&2 echo "Error: $script requires 3 arguments, got $#"
-  >&2 echo "Usage: $script ORG UPSTREAM_ORG REPONAME"
+  SCRIPT_NAME=$(basename -- "$0")
+  >&2 echo "Error: ${SCRIPT_NAME} requires 3 arguments, got $#"
+  >&2 echo "Usage: ${SCRIPT_NAME} ORG UPSTREAM_ORG REPONAME"
   exit 1
 fi
 
