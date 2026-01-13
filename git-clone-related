@@ -131,9 +131,19 @@ else
     echo "${SCRIPT_NAME}: About to run: ci-info"
   fi
 
-  eval "$("${CI_INFO}" "${UPSTREAM_ORG}")"
+  ci_info_output="$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: Finished running ci-info"
+    echo "${SCRIPT_NAME}: Done: ci-info"
+    echo "---- start of ci-info output ----"
+    # If `set -v` is on, the output will appear doubled, with the first copy preceded by "+ echo ".
+    echo "${ci_info_output}"
+    echo "---- end of ci-info output ----"
+    echo "${SCRIPT_NAME}: About to eval ci-info output in ${PWD}"
+  fi
+
+  eval "${ci_info_output}"
+  if [ -n "$DEBUG" ]; then
+    echo "${SCRIPT_NAME}: Done: eval ci-info output in ${PWD}"
   fi
   UPSTREAM_REPO_URL="https://github.com/${UPSTREAM_ORG}/${REPO_NAME}.git"
 
