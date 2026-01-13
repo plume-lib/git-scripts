@@ -16,7 +16,7 @@ GOAL_REPO=$4
 GOAL_BRANCH=$5
 
 DEBUG=
-DEBUG=--debug
+# DEBUG=--debug
 
 set -o errexit -o nounset
 # set -o pipefail
@@ -46,9 +46,7 @@ clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
 # git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
 clonedbranch=$(git -C "$resultdir" rev-parse --abbrev-ref HEAD)
 
-if [ -z "$DEBUG" ]; then
-  rm -rf "$startdir" "$resultdir"
-fi
+rm -rf "$startdir" "$resultdir"
 
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
   echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
