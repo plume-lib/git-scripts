@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# Test one invocation of git-clone-related
+# Test one invocation of git-clone-related.
 
-# arguments:
+# Arguments:
 #  1: repo from which to run git-clone-related
 #  2: branch from which to run git-clone-related
 #  3: git-clone-related arguments
-#  4: repo that should be cloned
-#  5: branch that should be cloned
+#  4: expected repo that should be cloned
+#  5: expected branch that should be cloned
 
 START_REPO=$1
 START_BRANCH=$2
@@ -19,7 +19,8 @@ set -o errexit -o nounset
 # set -o pipefail
 # Display commands and their arguments as they are executed.
 # set -x
-# set -v : Display shell input lines as they are read.
+# Display shell input lines as they are read.
+# set -v
 
 USER=${USER:-git-clone-related}
 PLUME_SCRIPTS=$(cd ../../ && pwd -P)
