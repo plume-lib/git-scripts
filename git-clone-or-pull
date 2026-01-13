@@ -47,7 +47,6 @@ DESTINATION="${DESTINATION_PARENT:?}/${REPO_NAME}"
 if test -d "${DESTINATION}"; then
   (cd "${DESTINATION}" && (timeout 180 git pull -q || (sleep 1m && (timeout 180 git pull || true))))
 else
-  mkdir -p "${DESTINATION_PARENT}"
   if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
     rm -rf "${DESTINATION}"
     sleep 180

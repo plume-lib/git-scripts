@@ -41,7 +41,7 @@ unset TRAVIS
 unset CIRCLE_COMPARE_URL
 unset GITHUB_HEAD_REF
 
-echo "$0: About to run: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $ARGS $resultdir)"
+echo "$0: About to run: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $DEBUG $ARGS $resultdir)"
 # shellcheck disable=SC2086  # $DEBUG and $ARGS should not be quoted
 (cd "$startdir" && "${GIT_SCRIPTS}"/git-clone-related $DEBUG $ARGS "$resultdir")
 echo "$0: Done: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $ARGS $resultdir)"
