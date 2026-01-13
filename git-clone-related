@@ -111,7 +111,7 @@ else
   for dir in "../plume-scripts" ".plume-scripts" "../.plume-scripts"; do
     if [ -d "${SCRIPT_DIR}/${dir}" ]; then
       PLUME_SCRIPTS="${SCRIPT_DIR}/${dir}"
-  fi
+    fi
   done
   if [ -z "$PLUME_SCRIPTS" ]; then
     (cd "$SCRIPT_DIR" && git clone -q --depth 1 https://github.com/plume-lib/plume-scripts .plume-scripts)
