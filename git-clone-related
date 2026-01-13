@@ -95,7 +95,7 @@ if [ -n "$DEBUG" ]; then
   echo "Entering ${SCRIPT_NAME} $UPSTREAM_ORG $REPO_NAME $DESTINATION $*"
 fi
 
-echo "In directory $(pwd) :"
+echo "In directory ${PWD} :"
 if [ -d "${DESTINATION}" ]; then
   echo "${SCRIPT_NAME}: destination ${DESTINATION} exists; pulling"
   # Use "cd" because older versions of git (eg, CircleCI) don't support the -C command-line option.
