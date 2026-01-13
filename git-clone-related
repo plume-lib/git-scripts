@@ -107,16 +107,18 @@ elif [ -e "${DESTINATION}" ]; then
   file "${DESTINATION}"
   exit 1
 else
-  CI_INFO="$SCRIPT_DIR/../plume-scripts/ci-info"
-  if [ ! -f "$CI_INFO" ]; then
-    CI_INFO="$SCRIPT_DIR/../.plume-scripts/ci-info"
+  # Set PLUME_SCRIPTS.
+  for dir in "../plume-scripts" ".plume-scripts" "../.plume-scripts"; do
+    if [ -d "${SCRIPT_DIR}/${dir}" ]; then
+      PLUME_SCRIPTS="${SCRIPT_DIR}/${dir}"
   fi
-  if [ ! -f "$CI_INFO" ]; then
-    CI_INFO="$SCRIPT_DIR/.plume-scripts/ci-info"
-  fi
-  if [ ! -f "$CI_INFO" ]; then
+  done
+  if [ -z "$PLUME_SCRIPTS" ]; then
     (cd "$SCRIPT_DIR" && git clone -q --depth 1 https://github.com/plume-lib/plume-scripts .plume-scripts)
+    PLUME_SCRIPTS="${SCRIPT_DIR}/.plume-scripts"
   fi
+
+  CI_INFO="${PLUME_SCRIPTS}/ci-info"
   if [ ! -f "$CI_INFO" ]; then
     echo "CI_INFO does not exist: $CI_INFO"
     exit 1
