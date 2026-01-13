@@ -5,7 +5,8 @@
 # Usage: git-clone-or-pull ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS]
 #   ORG is the GitHub organization
 #   REPO_NAME is the repository name (without the organization)
-#   DESTINATION_PARENT is the directory that contains the clone directory.
+#   DESTINATION_PARENT is the directory that contains the clone directory.  It
+#     defaults to the current directory.
 #   GIT_CLONE_ARGS is extra arguments to git clone.  It defaults to
 #     "-q --single-branch --depth 1" (without the quotes).
 #     It is not used if the destination already exists.
@@ -40,7 +41,7 @@ if [ "$#" -eq 0 ]; then
 fi
 
 REPO_URL="https://github.com/${ORG}/${REPO_NAME}.git"
-DESTINATION="${DESTINATION_PARENT}/${REPO_NAME}"
+DESTINATION="${DESTINATION_PARENT:?}/${REPO_NAME}"
 
 # Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
 if test -d "${DESTINATION}"; then
@@ -48,7 +49,8 @@ if test -d "${DESTINATION}"; then
 else
   mkdir -p "${DESTINATION_PARENT}"
   if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
-    sleep 1m
+    rm -rf "${DESTINATION:?}/${REPO_NAME}"
+    sleep 180
     timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"
   fi
 fi
