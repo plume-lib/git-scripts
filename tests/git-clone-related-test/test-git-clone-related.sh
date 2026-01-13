@@ -15,6 +15,9 @@ ARGS=$3
 GOAL_REPO=$4
 GOAL_BRANCH=$5
 
+DEBUG=
+# DEBUG=--debug
+
 set -o errexit -o nounset
 # set -o pipefail
 
@@ -38,10 +41,10 @@ unset TRAVIS
 unset CIRCLE_COMPARE_URL
 unset GITHUB_HEAD_REF
 
-echo "$0: About to run: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $ARGS $resultdir)"
-# shellcheck disable=SC2086  # $ARGS should not be quoted
-(cd "$startdir" && "${GIT_SCRIPTS}"/git-clone-related $ARGS "$resultdir")
-echo "$0: Done: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $ARGS $resultdir)"
+echo "$0: About to run: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $DEBUG $ARGS $resultdir)"
+# shellcheck disable=SC2086  # $DEBUG and $ARGS should not be quoted
+(cd "$startdir" && "${GIT_SCRIPTS}"/git-clone-related $DEBUG $ARGS "$resultdir")
+echo "$0: Done: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $DEBUG $ARGS $resultdir)"
 
 clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
 # git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.

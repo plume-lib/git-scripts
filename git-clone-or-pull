@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# git-clone-or-pull:  clone a GitHub repository, or pull it if already cloned.
+#
+# Usage: git-clone-or-pull ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS...]
+#   ORG is the GitHub organization
+#   REPO_NAME is the repository name (without the organization)
+#   DESTINATION_PARENT is the directory that contains the clone directory.  It
+#     defaults to the current directory.
+#   GIT_CLONE_ARGS is extra arguments to git clone.  It defaults to
+#     "-q --single-branch --depth 1" (without the quotes).
+#     It is not used if the destination already exists.
+
+SCRIPT_NAME="$(basename "$0")"
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: ${SCRIPT_NAME} ORG REPO_NAME [DESTINATION_PARENT] [GIT_CLONE_ARGS...]" >&2
+  exit 1
+fi
+
+beginswith() { case $2 in "$1"*) true ;; *) false ;; esac }
+
+ORG=$1
+shift
+REPO_NAME=$1
+shift
+DESTINATION_PARENT=.
+if [ "$#" -ne 0 ]; then
+  if ! beginswith "-" "$1"; then
+    # Does not start with "-" and therefore isn't a command-line argument.
+    DESTINATION_PARENT=$1
+    shift
+    if [ ! -d "${DESTINATION_PARENT}" ]; then
+      mkdir -p "${DESTINATION_PARENT}"
+    fi
+  fi
+fi
+if [ "$#" -eq 0 ]; then
+  # Default command-line arguments.
+  set -- -q --single-branch --depth 1
+fi
+
+REPO_URL="https://github.com/${ORG}/${REPO_NAME}.git"
+DESTINATION="${DESTINATION_PARENT:?}/${REPO_NAME}"
+
+# Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
+if test -d "${DESTINATION}"; then
+  (cd "${DESTINATION}" && (timeout 180 git pull -q || (sleep 1m && (timeout 180 git pull || true))))
+else
+  if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
+    rm -rf "${DESTINATION}"
+    sleep 180
+    if ! timeout 180 git clone "$@" "${REPO_URL}" "${DESTINATION}"; then
+      echo "Failed to clone ${REPO_URL}"
+      exit 1
+    fi
+  fi
+fi
+
+echo "${SCRIPT_NAME}: ${REPO_NAME} is at $(cd "${DESTINATION}" && git rev-parse HEAD)"
