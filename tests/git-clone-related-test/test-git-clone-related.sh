@@ -24,8 +24,8 @@ set -o errexit -o nounset
 USER=${USER:-git-clone-related}
 PLUME_SCRIPTS=$(cd ../../ && pwd -P)
 startdir=$(mktemp -d 2> /dev/null || mktemp -d -t 'startdir')
-goaldir=$(mktemp -d 2> /dev/null || mktemp -d -t 'goaldir')
-rm -rf "$startdir" "$goaldir"
+resultdir=$(mktemp -d 2> /dev/null || mktemp -d -t 'resultdir')
+rm -rf "$startdir" "$resultdir"
 
 git clone --branch "$START_BRANCH" "$START_REPO" "$startdir" -q --single-branch --depth 1
 # This test might itself be running under CI, so unset the variables that
@@ -35,21 +35,23 @@ unset BUILD_SOURCEBRANCH
 unset TRAVIS
 unset CIRCLE_COMPARE_URL
 unset GITHUB_HEAD_REF
-# shellcheck disable=SC2086  # $ARGS should not be quoted
-(cd "$startdir" && "${PLUME_SCRIPTS}"/git-clone-related $ARGS "$goaldir")
-clonedrepo=$(git -C "$goaldir" config --get remote.origin.url)
-# git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
-clonedbranch=$(git -C "$goaldir" rev-parse --abbrev-ref HEAD)
 
-rm -rf "$startdir" "$goaldir"
+# shellcheck disable=SC2086  # $ARGS should not be quoted
+(cd "$startdir" && "${PLUME_SCRIPTS}"/git-clone-related $ARGS "$resultdir")
+
+clonedrepo=$(git -C "$resultdir" config --get remote.origin.url)
+# git 2.22 and later has `git branch --show-current`; CircleCI doesn't have that version yet.
+clonedbranch=$(git -C "$resultdir" rev-parse --abbrev-ref HEAD)
+
+rm -rf "$startdir" "$resultdir"
 
 if [ "$clonedrepo" != "$GOAL_REPO" ]; then
-  echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-  echo "expected repo $GOAL_REPO, got: $clonedrepo"
+  echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  echo "error: expected repo $GOAL_REPO, got: $clonedrepo"
   exit 2
 fi
 if [ "$clonedbranch" != "$GOAL_BRANCH" ]; then
-  echo "test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
-  echo "expected branch $GOAL_BRANCH, got: $clonedbranch"
+  echo "error: test-git-clone-related.sh \"$1\" \"$2\" \"$3\" \"$4\" \"$5\""
+  echo "error: expected branch $GOAL_BRANCH, got: $clonedbranch"
   exit 2
 fi
