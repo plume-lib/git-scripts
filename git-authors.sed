@@ -37,6 +37,7 @@ s/^PratikBhusal$/Pratik Bhusal/
 s/^Rashmi$/Rashmi Mudduluru/
 s/^Sadaf$/Sadaf Tajik/
 s/^SnowOnion$/Sonion Lee/
+s/^Suvrat1629$/Suvrat Acharya/
 s/^Vlastimil$/Vlastimil Dort/
 s/^W. Dietl$/Werner Dietl/
 s/^YukiYang31$/Yuki Yang/
