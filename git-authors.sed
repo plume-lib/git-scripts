@@ -126,6 +126,7 @@ s/^rjust$/René Just/
 s/^salcianu$/Alexandru Salcianu/
 s/^scruffy$/Benjamin Morse/
 s/^shisheng-1$/Junhao Hu/
+s/^shubham kapoor$/Shubham Kapoor/
 s/^shubhamk0205$/Shubham Kapoor/
 s/^sjl$/Sandra Loosemore/
 s/^smcc$/Stephen McCamant/
@@ -146,6 +147,7 @@ s/^txiang61$/Jenny Xiang/
 s/^utsavoza$/Utsav Oza/
 s/^vaidikcode$/Vaidik Bhardwaj/
 s/^vananiev$/Vitalii Ananiev/
+s/^vivek-0509$/Vivek Singh Solanki/
 s/^vkm$/Vikash Mansinghka/
 s/^wdietl$/Werner Dietl/
 s/^wmdietl$/Werner Dietl/
