@@ -128,9 +128,11 @@ else
     echo "${SCRIPT_NAME}: About to run: ci-info --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
     echo "${SCRIPT_NAME}: Done: ci-info --debug"
-    echo "${SCRIPT_NAME}: About to run: ci-info"
   fi
 
+  if [ -n "$DEBUG" ]; then
+    echo "${SCRIPT_NAME}: About to run: ci-info"
+  fi
   ci_info_output="$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ]; then
     echo "${SCRIPT_NAME}: Done: ci-info"
@@ -141,7 +143,14 @@ else
     echo "${SCRIPT_NAME}: About to eval ci-info output in ${PWD}"
   fi
 
-  eval "${ci_info_output}"
+  if ! eval "${ci_info_output}"; then
+    echo "${SCRIPT_NAME}: Unable to eval ci-info output"
+    echo "${SCRIPT_NAME}: About to run: ci-info --debug"
+    "${CI_INFO}" --debug "${UPSTREAM_ORG}"
+    echo "${SCRIPT_NAME}: Done: ci-info --debug"
+    false
+  fi
+
   if [ -n "$DEBUG" ]; then
     echo "${SCRIPT_NAME}: Done: eval ci-info output in ${PWD}"
   fi
