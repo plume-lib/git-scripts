@@ -102,6 +102,7 @@ s/^marinov$/Darko Marinov/
 s/^matthew.s.tschantz$/Matthew Tschantz/
 s/^mcarthur$/David McArthur/
 s/^mernst$/Michael Ernst/
+s/^mernstcheckerframework$/Michael Ernst/
 s/^mhao$/Melissa Hao/
 s/^mharder$/Michael Harder/
 s/^michael.ernst$/Michael Ernst/
