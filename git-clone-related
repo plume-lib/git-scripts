@@ -144,7 +144,8 @@ else
   fi
 
   if ! eval "${ci_info_output}"; then
-    echo "${SCRIPT_NAME}: Unable to eval ci-info output"
+    echo "${SCRIPT_NAME}: Unable to eval ci-info output, which was:"
+    echo "${ci_info_output}"
     echo "${SCRIPT_NAME}: About to run: ci-info --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
     echo "${SCRIPT_NAME}: Done: ci-info --debug"
