@@ -25,8 +25,6 @@ Exit status is 1 (failure) if conflicts remain.
 
 from __future__ import annotations
 
-import itertools
-import shutil
 import sys
 import tempfile
 from argparse import ArgumentParser
@@ -64,13 +62,7 @@ def main() -> None:  # pylint: disable=too-many-locals
     args = arg_parser.parse_args()
     filename = args.filename
 
-    num_options = 0
-    if args.adjacent_lines:
-        num_options += 1
-    if args.blank_lines:
-        num_options += 1
-    if args.java_imports:
-        num_options += 1
+    num_options = sum([args.adjacent_lines, args.blank_lines, args.java_imports])
     if num_options != 1:
         print("resolve-conflicts.py: supply exactly one option.")
         sys.exit(1)
@@ -107,9 +99,7 @@ def main() -> None:  # pylint: disable=too-many-locals
                         tmp.write(line)
                     i = i + num_lines
 
-        tmp.close()
-        shutil.copy(tmp.name, filename)
-        Path.unlink(Path(tmp.name))
+        Path.replace(Path(tmp.name), filename)
 
     if conflicts_remain:
         sys.exit(1)
@@ -268,11 +258,7 @@ def merge_edits_on_different_lines(
     result: list[str] | None = None
     if base_len == len(parent1) and base_len == len(parent2):
         result = []
-        for base_line, parent1_line, parent2_line in itertools.zip_longest(
-            base,
-            parent1,
-            parent2,
-        ):
+        for base_line, parent1_line, parent2_line in zip(base, parent1, parent2, strict=True):
             debug_print("Considering line:", base_line, parent1_line, parent2_line)
             if parent1_line == parent2_line:
                 result.append(parent1_line)
@@ -395,10 +381,7 @@ def with_one_space(lines: list[str]) -> str:
     # TODO: This could be more efficient.  Even better, I could write a loop in
     # merge_blank_lines that wouldn't need to create new strings at all. But this is
     # expedient to write and is probably fast enough.
-    result_lines = []
-    for line in lines:
-        result_lines += line.split()
-    return " ".join(result_lines)
+    return " ".join(word for line in lines for word in line.split())
 
 
 def debug_print(*args: object) -> None:
