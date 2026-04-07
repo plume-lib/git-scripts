@@ -40,7 +40,7 @@
 # Do not attempt to add "--filter=blob:none" to the git command, as older git
 # clients (apparently including GitHub, as of 2024-01-27) do not support it.
 
-# Fail if any command fails.
+# Do not fail on error; this script handles errors explicitly.
 set +e
 
 if [ "$1" = "--debug" ]; then
@@ -111,6 +111,7 @@ else
   for dir in "../plume-scripts" ".plume-scripts" "../.plume-scripts"; do
     if [ -d "${SCRIPT_DIR}/${dir}" ]; then
       PLUME_SCRIPTS="${SCRIPT_DIR}/${dir}"
+      break
     fi
   done
   if [ -z "$PLUME_SCRIPTS" ]; then

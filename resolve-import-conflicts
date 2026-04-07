@@ -1,9 +1,9 @@
 #!/bin/bash
 # bash, not POSIX sh, because of "readarray".
 
-echo "Please use the program in https://github.com/plume-lib/merging ."
-echo "You are using $0,"
-echo "which is an obsolete version in https://github.com/plume-lib/git-scripts ."
+echo "Please use the program in https://github.com/plume-lib/merging ." >&2
+echo "You are using $0," >&2
+echo "which is an obsolete version in https://github.com/plume-lib/git-scripts ." >&2
 
 # This script edits files in place to remove conflict markers related to Java
 # imports.  For a given conflict that involves only `import` statements and
