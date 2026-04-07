@@ -25,6 +25,7 @@ Exit status is 1 (failure) if conflicts remain.
 
 from __future__ import annotations
 
+import shutil
 import sys
 import tempfile
 from argparse import ArgumentParser
@@ -99,7 +100,9 @@ def main() -> None:  # pylint: disable=too-many-locals
                         tmp.write(line)
                     i = i + num_lines
 
-        Path.replace(Path(tmp.name), filename)
+        tmp.close()
+        shutil.copy(tmp.name, filename)
+        Path.unlink(Path(tmp.name))
 
     if conflicts_remain:
         sys.exit(1)
