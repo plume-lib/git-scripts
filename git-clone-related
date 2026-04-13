@@ -97,16 +97,17 @@ fi
 
 echo "In directory ${PWD} :"
 if [ -d "${DESTINATION}" ]; then
-  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists; pulling"
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists; pulling."
   # Use "cd" because older versions of git (eg, CircleCI) don't support the -C command-line option.
   # In a Travis pull request, a repository can be in state "(HEAD detached at b475d58d)"
   # and "git pull" fails.
   (cd "${DESTINATION}" && (git pull -q || (git branch && true)))
 elif [ -e "${DESTINATION}" ]; then
-  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists and is not a directory"
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} exists and is not a directory."
   file "${DESTINATION}"
   exit 1
 else
+  echo "${SCRIPT_NAME}: destination ${DESTINATION} does not exist."
   # Set PLUME_SCRIPTS.
   for dir in "../plume-scripts" ".plume-scripts" "../.plume-scripts"; do
     if [ -d "${SCRIPT_DIR}/${dir}" ]; then
@@ -185,6 +186,7 @@ else
     fi
   fi
   echo "${SCRIPT_NAME}: About to run: git clone -q -b ${REPO_BRANCH} $* ${REPO_URL} ${DESTINATION}"
+  echo "${SCRIPT_NAME}:   in directory ${PWD}"
   # Try twice in case of network lossage.  60 seconds is not enough to clone a branch of the JDK.
   if ! timeout 180 git clone -q -b "${REPO_BRANCH}" "$@" "${REPO_URL}" "${DESTINATION}"; then
     echo "Retrying 'git clone ... ${REPO_URL} ${DESTINATION}'"
