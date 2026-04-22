@@ -99,6 +99,7 @@ s/^lnsun$/Lian Sun/
 s/^looser$/Nitin Kumar Das/
 s/^mali$/Mahmood Ali/
 s/^marinov$/Darko Marinov/
+s/^marko-bekhta$/Marko Bekhta/
 s/^matthew.s.tschantz$/Matthew Tschantz/
 s/^mcarthur$/David McArthur/
 s/^mernst$/Michael Ernst/
