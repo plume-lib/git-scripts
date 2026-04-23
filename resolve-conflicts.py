@@ -35,13 +35,13 @@ from typing import TYPE_CHECKING, TypeVar
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-T = TypeVar("T")  # Type variable for use in type hints
+T = TypeVar("T")
 
 # If true, print diagnostic output
 debug = False
 
 
-def main() -> None:  # pylint: disable=too-many-locals
+def main() -> None:
     """Resolve conflicts."""
     arg_parser = ArgumentParser()
     arg_parser.add_argument("filename")
@@ -80,7 +80,7 @@ def main() -> None:  # pylint: disable=too-many-locals
             conflict = looking_at_conflict(filename, i, lines)
             if conflict is None:
                 tmp.write(lines[i])
-                i = i + 1
+                i += 1
             else:
                 (base, parent1, parent2, num_lines) = conflict
                 merged = merge(
@@ -93,16 +93,16 @@ def main() -> None:  # pylint: disable=too-many-locals
                 )
                 if merged is None:
                     tmp.write(lines[i])
-                    i = i + 1
+                    i += 1
                     conflicts_remain = True
                 else:
                     for line in merged:
                         tmp.write(line)
-                    i = i + num_lines
+                    i += num_lines
 
         tmp.close()
         shutil.copy(tmp.name, filename)
-        Path.unlink(Path(tmp.name))
+        Path(tmp.name).unlink()
 
     if conflicts_remain:
         sys.exit(1)
@@ -110,7 +110,7 @@ def main() -> None:  # pylint: disable=too-many-locals
         sys.exit(0)
 
 
-def looking_at_conflict(  # pylint: disable=too-many-return-statements
+def looking_at_conflict(
     filename: str,
     start_index: int,
     lines: list[str],
@@ -143,50 +143,44 @@ def looking_at_conflict(  # pylint: disable=too-many-return-statements
         return None
     while not (lines[index].startswith("|||||||") or lines[index].startswith("=======")):
         parent1.append(lines[index])
-        index = index + 1
+        index += 1
         if index == num_lines:
             debug_print(
-                "Starting at line "
-                + str(start_index)
-                + ", did not find ||||||| or ======= in "
-                + filename,
+                f"Starting at line {start_index}, did not find ||||||| or ======= in {filename}",
             )
             return None
     if lines[index].startswith("|||||||"):
-        index = index + 1
+        index += 1
         if index == num_lines:
-            debug_print("File ends with |||||||: " + filename)
+            debug_print(f"File ends with |||||||: {filename}")
             return None
         while not lines[index].startswith("======="):
             base.append(lines[index])
-            index = index + 1
+            index += 1
             if index == num_lines:
                 debug_print(
-                    "Starting at line "
-                    + str(start_index)
-                    + ", did not find ======= in "
-                    + filename,
+                    f"Starting at line {start_index}, did not find ======= in {filename}",
                 )
                 return None
     assert lines[index].startswith("=======")
-    index = index + 1  # skip over "=======" line
+    index += 1  # skip over "=======" line
     if index == num_lines:
-        debug_print("File ends with =======: " + filename)
+        debug_print(f"File ends with =======: {filename}")
         return None
     while not lines[index].startswith(">>>>>>>"):
         parent2.append(lines[index])
-        index = index + 1
+        index += 1
         if index == num_lines:
             debug_print(
-                "Starting at line " + str(start_index) + ", did not find >>>>>>> in " + filename,
+                f"Starting at line {start_index}, did not find >>>>>>> in {filename}",
             )
             return None
-    index = index + 1
+    index += 1
 
     return (base, parent1, parent2, index - start_index)
 
 
-def merge(  # pylint: disable=too-many-arguments
+def merge(
     base: list[str],
     parent1: list[str],
     parent2: list[str],
@@ -319,7 +313,6 @@ def merge_base_is_prefix_or_suffix(
     """
     base_len = len(base)
     parent1_len = len(parent1)
-    # parent2_len = len(parent2)
     if base_len < parent1_len:
         if parent1[:base_len] == base:
             debug_print("startswith", parent1, base)
@@ -340,8 +333,6 @@ def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
     Returns:
         true if s1 is a subsequence of s2.
     """
-    # Iterative implementation.
-
     n, m = len(s1), len(s2)
     i, j = 0, 0
     while i < n and j < m:

@@ -49,14 +49,14 @@ SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd -P)"
 status=0
 
 for file in "${files[@]}"; do
-  if [ "$DEBUG" ]; then
+  if [ "$DEBUG" -ne 0 ]; then
     echo "before resolve-conflicts.py: $(sha256sum "$file")"
     cat "$file"
   fi
   if ! "${SCRIPT_DIR}"/resolve-conflicts.py --adjacent_lines "$file"; then
     status=1
   fi
-  if [ "$DEBUG" ]; then
+  if [ "$DEBUG" -ne 0 ]; then
     echo "after resolve-conflicts.py: (status=$status: $(sha256sum "$file")"
     cat "$file"
   fi

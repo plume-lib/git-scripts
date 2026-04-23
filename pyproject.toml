@@ -1,7 +1,7 @@
 [project]
 name = "git-scripts"
 version = "0.1.0"
-description = "Add your description here"
+description = "Scripts for git, such as automatically resolving merge conflicts"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
