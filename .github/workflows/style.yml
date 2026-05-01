@@ -1,5 +1,5 @@
 name: Check style
-on: [push, pull_request]
+on: [push, pull_request]  # yamllint disable-line rule:truthy
 jobs:
   style:
     defaults:

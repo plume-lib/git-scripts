@@ -1,5 +1,5 @@
 name: Run Small test
-on: [push, pull_request]
+on: [push, pull_request]  # yamllint disable-line rule:truthy
 jobs:
   test:
     runs-on: ubuntu-latest
