@@ -38,7 +38,6 @@ git clone --branch "$START_BRANCH" "$START_REPO" "$startdir" -q --single-branch 
 unset SYSTEM_PULLREQUEST_TARGETBRANCH
 unset BUILD_SOURCEBRANCH
 unset TRAVIS
-unset CIRCLE_COMPARE_URL
 unset GITHUB_HEAD_REF
 
 echo "$0: About to run: (cd $startdir && ${GIT_SCRIPTS}/git-clone-related $DEBUG $ARGS $resultdir)"
