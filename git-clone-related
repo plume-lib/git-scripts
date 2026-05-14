@@ -64,6 +64,7 @@ fi
 
 beginswith() { case $2 in "$1"*) true ;; *) false ;; esac }
 
+# Set variables from command-line arguments.
 UPSTREAM_ORG=$1
 shift
 REPO_NAME=$1
