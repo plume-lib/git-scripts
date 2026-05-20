@@ -15,6 +15,11 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: '3.14.5'
+      - name: ci-info
+        run: |
+          mkdir -p /tmp
+          git -C /tmp clone --depth=1 -q https://github.com/plume-lib/plume-scripts.git
+          /tmp/plume-scripts/ci-info --debug
       - name: Run tests
         run: |
           git config --global user.email "example@example.com"
