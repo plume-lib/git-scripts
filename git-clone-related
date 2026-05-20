@@ -47,6 +47,9 @@ if [ "$1" = "--debug" ]; then
   set -x
 fi
 
+# TEMPORARY
+DEBUG=1
+
 # FALLBACK_BRANCH may be unset.
 if [ "$1" = "--upstream-branch" ]; then
   shift
