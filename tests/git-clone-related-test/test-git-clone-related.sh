@@ -34,7 +34,7 @@ rm -rf "$startdir" "$resultdir"
 
 git clone --branch "$START_BRANCH" "$START_REPO" "$startdir" -q --single-branch --depth 1
 # This test might itself be running under CI, so unset the variables that
-# `ci-info` examines.
+# `git-changes` examines.
 unset SYSTEM_PULLREQUEST_TARGETBRANCH
 unset BUILD_SOURCEBRANCH
 unset TRAVIS
