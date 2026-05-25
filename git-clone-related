@@ -122,46 +122,46 @@ else
   # TODO: Put this behind the debugging flag.
   echo "plume-scripts HEAD = $(git -C "${PLUME_SCRIPTS}" rev-parse HEAD)"
 
-  CI_INFO="${PLUME_SCRIPTS}/ci-info"
+  CI_INFO="${PLUME_SCRIPTS}/ci-org-and-branch"
   echo "CI_INFO=${CI_INFO}"
   if [ ! -f "$CI_INFO" ]; then
-    echo "ci-info script does not exist: ${CI_INFO}"
+    echo "ci-org-and-branch script does not exist: ${CI_INFO}"
     echo "PLUME_SCRIPTS=${PLUME_SCRIPTS}"
     ls -a "${PLUME_SCRIPTS}"
-    echo "ci-info script does not exist: ${CI_INFO}"
+    echo "ci-org-and-branch script does not exist: ${CI_INFO}"
     exit 1
   fi
 
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: About to run: ci-info --debug"
+    echo "${SCRIPT_NAME}: About to run: ci-org-and-branch --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
-    echo "${SCRIPT_NAME}: Done: ci-info --debug"
+    echo "${SCRIPT_NAME}: Done: ci-org-and-branch --debug"
   fi
 
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: About to run: ci-info"
+    echo "${SCRIPT_NAME}: About to run: ci-org-and-branch"
   fi
   ci_info_output="$("${CI_INFO}" "${UPSTREAM_ORG}")"
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: Done: ci-info"
-    echo "---- start of ci-info output ----"
+    echo "${SCRIPT_NAME}: Done: ci-org-and-branch"
+    echo "---- start of ci-org-and-branch output ----"
     # If `set -v` is on, the output will appear doubled, with the first copy preceded by "+ echo ".
     echo "${ci_info_output}"
-    echo "---- end of ci-info output ----"
-    echo "${SCRIPT_NAME}: About to eval ci-info output in ${PWD}"
+    echo "---- end of ci-org-and-branch output ----"
+    echo "${SCRIPT_NAME}: About to eval ci-org-and-branch output in ${PWD}"
   fi
 
   if ! eval "${ci_info_output}"; then
-    echo "${SCRIPT_NAME}: Unable to eval ci-info output, which was:"
+    echo "${SCRIPT_NAME}: Unable to eval ci-org-and-branch output, which was:"
     echo "${ci_info_output}"
-    echo "${SCRIPT_NAME}: About to run: ci-info --debug"
+    echo "${SCRIPT_NAME}: About to run: ci-org-and-branch --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
-    echo "${SCRIPT_NAME}: Done: ci-info --debug"
+    echo "${SCRIPT_NAME}: Done: ci-org-and-branch --debug"
     false
   fi
 
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: Done: eval ci-info output in ${PWD}"
+    echo "${SCRIPT_NAME}: Done: eval ci-org-and-branch output in ${PWD}"
   fi
   UPSTREAM_REPO_URL="https://github.com/${UPSTREAM_ORG}/${REPO_NAME}.git"
 
