@@ -5,7 +5,7 @@
 
 """Edits a file in place to remove certain conflict markers.
 
-Usage: resolve-conflicts.py [options] <filenme>
+Usage: resolve-conflicts.py [options] <filename>
 Only one option is acted upon.  To address multiple types of conflict markers,
 run the program more than once.
 
@@ -16,8 +16,8 @@ behavior of Git, Mercurial, and Bazaar.
 --blank_lines: Resolves conflicts due to blank lines.
 If "ours" and "theirs" differ only in whitespace (including blank lines), then accept "ours".
 
---java_imports: Resolves conflicts related to Java import statements
-The output includes every `import` statements that is in either of the parents.
+--java_imports: Resolves conflicts related to Java import statements.
+The output includes every `import` statement that is in either of the parents.
 
 Exit status is 0 (success) if no conflicts remain.
 Exit status is 1 (failure) if conflicts remain.
@@ -101,7 +101,7 @@ def main() -> None:
                     i += num_lines
 
         tmp.close()
-        shutil.copy(tmp.name, filename)
+        shutil.copyfile(tmp.name, filename)
         Path(tmp.name).unlink()
 
     if conflicts_remain:
