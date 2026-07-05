@@ -5,19 +5,19 @@
 
 """Edits a file in place to remove certain conflict markers.
 
-Usage: resolve-conflicts.py [options] <filenme>
+Usage: resolve-conflicts.py [options] <filename>
 Only one option is acted upon.  To address multiple types of conflict markers,
 run the program more than once.
 
 --adjacent_lines: Resolves conflicts on adjacent lines, by accepting both edits.
-This is like the behavior of SVN and darcs, but different than the default
+This is like the behavior of SVN and darcs, but different from the default
 behavior of Git, Mercurial, and Bazaar.
 
 --blank_lines: Resolves conflicts due to blank lines.
 If "ours" and "theirs" differ only in whitespace (including blank lines), then accept "ours".
 
---java_imports: Resolves conflicts related to Java import statements
-The output includes every `import` statements that is in either of the parents.
+--java_imports: Resolves conflicts related to Java import statements.
+The output includes every `import` statement that is in either of the parents.
 
 Exit status is 0 (success) if no conflicts remain.
 Exit status is 1 (failure) if conflicts remain.
@@ -238,7 +238,7 @@ def merge_edits_on_different_lines(
     parent1: list[str],
     parent2: list[str],
 ) -> list[str] | None:
-    """Return a merged version, if at most parent1 or parent2 edits each line.
+    """Return a merged version, if at most one of parent1 and parent2 edits each line.
 
     Args:
         base: the text in the common ancestor
@@ -373,7 +373,7 @@ def with_one_space(lines: list[str]) -> str:
         a single string, with each run of whitespace replaced by a single space.
     """
     # TODO: This could be more efficient.  Even better, I could write a loop in
-    # merge_blank_lines that wouldn't need to create new strings at all. But this is
+    # merge_blank_lines that wouldn't need to create new strings at all.  But this is
     # expedient to write and is probably fast enough.
     return " ".join(word for line in lines for word in line.split())
 
