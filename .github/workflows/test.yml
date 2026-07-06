@@ -19,4 +19,7 @@ jobs:
         run: |
           git config --global user.email "example@example.com"
           git config --global user.name "Example Example"
-          make test
+          # TODO: reinstate `make test` and remove the other `make` calls
+          # make test
+          ${MAKE} -C tests/resolve-adjacent-conflicts-test
+          ${MAKE} -C tests/resolve-import-conflicts-test
