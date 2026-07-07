@@ -101,7 +101,7 @@ def main() -> None:
                     i += num_lines
 
         tmp.close()
-        shutil.copy(tmp.name, filename)
+        shutil.copyfile(tmp.name, filename)
         Path(tmp.name).unlink()
 
     if conflicts_remain:
