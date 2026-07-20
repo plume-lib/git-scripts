@@ -79,6 +79,12 @@ Tests whether a branch exists in a Git repository;
 prints the branch, or prints "master" if the branch does not exist.
 [Documentation](git-find-branch) at top of file.
 
+### git-test-mergetool
+
+Creates a scratch repository containing a merge conflict, then runs
+`git mergetool` on it, so that you can test your Git mergetool.
+[Documentation](git-test-mergetool) at top of file.
+
 ### resolve-adjacent-conflicts
 
 Edits files in place to resolve git conflicts that arise from edits to
