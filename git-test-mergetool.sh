@@ -40,5 +40,5 @@ cd clone2 || exit
 printf 'Line 1\nLine 2\nLine 3\nLine 4 in 2\nLine 5\nLine 6\nLine 7 in 2\nLine 8 in 2\nLine 9' > file.txt
 echo 'Baz quux in 2' > file3.txt
 git commit -m "Changes in clone 2" file.txt file3.txt
-git pull
+git pull --no-rebase --no-ff
 git mergetool
