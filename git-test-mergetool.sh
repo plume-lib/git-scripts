@@ -6,7 +6,7 @@
 mkdir -p /tmp/"${USER}"
 cd /tmp/"${USER}" || {
   echo "cannot cd to /tmp/${USER}"
-  exit
+  exit 2
 }
 
 rm -rf repo clone1 clone2
