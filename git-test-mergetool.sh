@@ -17,20 +17,16 @@ git init --bare
 cd ..
 
 git clone repo clone1
-git clone repo clone2
-
 cd clone1 || exit
 printf 'Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9' > file.txt
 echo 'Foo bar' > file2.txt
 echo 'Baz quux' > file3.txt
 git add file.txt file2.txt file3.txt
 git commit -m "Initial contents"
-git push
+git push -u origin HEAD
 cd ..
 
-cd clone2 || exit
-git pull
-cd ..
+git clone repo clone2
 
 cd clone1 || exit
 printf 'Line 1\nLine 2 in 1\nLine 3\nLine 4\nLine 5\nLine 6 in 1\nLine 7 in 1\nLine 8\nLine 9' > file.txt
