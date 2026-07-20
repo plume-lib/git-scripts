@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# git-test-mergetool:  test your Git mergetool on a scratch repository.
+#
+# Usage: git-test-mergetool
+#
+# Run this script, or cut-and-paste its commands into a shell.  It deletes
+# and recreates the directories /tmp/$USER/repo, /tmp/$USER/clone1, and
+# /tmp/$USER/clone2, then creates a merge conflict in /tmp/$USER/clone2 and
+# runs `git mergetool` on it.
+#
+# The merge conflicts in two files, file.txt and file3.txt; a third file,
+# file2.txt, merges cleanly and the mergetool should not be run on it.
+#
+# Requirements: `merge.tool` must be set in your Git configuration, as must
+# `user.name` and `user.email`.
+#
+# After the mergetool exits, the merge is not complete: resolve any
+# remaining conflicts, then run `git commit`.  The mergetool may leave
+# `*.orig` files behind.
+
+set -e
+
+USER="${USER:-$(id -un)}"
+SCRATCH_DIR="/tmp/${USER:?}"
+
+mkdir -p "${SCRATCH_DIR}"
+cd "${SCRATCH_DIR}" || {
+  echo "cannot cd to ${SCRATCH_DIR}" >&2
+  exit 2
+}
+
+rm -rf repo clone1 clone2
+
+mkdir repo
+cd repo || exit 2
+git init --bare -q --initial-branch=main
+cd ..
+
+git clone repo clone1
+cd clone1 || exit 2
+printf 'Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\n' > file.txt
+echo 'Foo bar' > file2.txt
+echo 'Baz quux' > file3.txt
+git add file.txt file2.txt file3.txt
+git commit -m "Initial contents"
+git push -u origin HEAD
+cd ..
+
+git clone repo clone2
+
+cd clone1 || exit 2
+printf 'Line 1\nLine 2 in 1\nLine 3\nLine 4\nLine 5\nLine 6 in 1\nLine 7 in 1\nLine 8\nLine 9\n' > file.txt
+echo 'Foo bar in 1' > file2.txt
+echo 'Baz quux in 1' > file3.txt
+git commit -m "Changes in clone 1" file.txt file2.txt file3.txt
+git push
+cd ..
+
+cd clone2 || exit 2
+printf 'Line 1\nLine 2\nLine 3\nLine 4 in 2\nLine 5\nLine 6\nLine 7 in 2\nLine 8 in 2\nLine 9\n' > file.txt
+echo 'Baz quux in 2' > file3.txt
+git commit -m "Changes in clone 2" file.txt file3.txt
+# This is expected to fail, because the merge conflicts.
+git pull --no-rebase --no-ff || true
+git mergetool
