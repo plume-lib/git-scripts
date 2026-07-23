@@ -1,3 +1,5 @@
+.PHONY: all clean test
+
 test:
 	${MAKE} -C git-clone-related-test test
 	${MAKE} -C resolve-adjacent-conflicts-test
