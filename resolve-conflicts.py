@@ -340,7 +340,7 @@ def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
             i += 1
         j += 1
 
-    # If i reaches the end of s1, we found all characters of s1 in s2,
+    # If i reaches the end of s1, we found all elements of s1 in s2,
     # so s1 is a subsequence of s2.
     return i == n
 
