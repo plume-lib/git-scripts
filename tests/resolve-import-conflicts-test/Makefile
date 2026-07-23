@@ -1,7 +1,10 @@
+.PHONY: all clean test
+
 RESOLVER=../../resolve-import-conflicts
 
 test: diff
 
+.PHONY: diff
 diff: Merged_ConflictStyleMerge.diff Merged_ConflictStyleDiff3.diff
 
 Merged_ConflictStyleMerge.diff: Merged_ConflictStyleMerge.goal Merged_ConflictStyleMerge.java

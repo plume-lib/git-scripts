@@ -1,5 +1,8 @@
+.PHONY: all clean test
+
 RESOLVER=../../resolve-adjacent-conflicts
 
+.PHONY: diff
 test: diff
 
 diff: Merged_ConflictStyleMerge.diff Merged_ConflictStyleDiff3.diff
