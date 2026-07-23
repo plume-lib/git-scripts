@@ -299,7 +299,7 @@ def merge_base_is_prefix_or_suffix(
     deleted all the lines, possibly replacing them by something else.  (We know
     this because there is no common line in base and parent2.  If there were, it
     would also be in parent1, and the hunk would have been split into two at the
-    common line that's in all three texts.  The Git Merge output doesn't include
+    common line that's in all three texts.  The `git merge` output doesn't include
     any common context lines within the conflict markers.)
     We know the relative position of the additions in parent1.
 
@@ -340,7 +340,7 @@ def is_subsequence(s1: Sequence[T], s2: Sequence[T]) -> bool:
             i += 1
         j += 1
 
-    # If i reaches end of s1, we found all characters of s1 in s2,
+    # If i reaches the end of s1, we found all characters of s1 in s2,
     # so s1 is a subsequence of s2.
     return i == n
 

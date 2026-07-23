@@ -1,7 +1,7 @@
 # This file converts authors found in a git history into full names.
 # It is necessary primarily when people have not configured git properly.
 
-# TODO: It might be better to match against full email address rather than
+# TODO: It might be better to match against the full email address rather than
 # just the id before the "@".
 
 s/^Ankit$/Ankit Yadav/
