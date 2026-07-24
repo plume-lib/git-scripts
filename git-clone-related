@@ -97,7 +97,7 @@ fi
 echo "In directory ${PWD} :"
 if [ -d "${DESTINATION}" ]; then
   echo "${SCRIPT_NAME}: destination ${DESTINATION} exists; pulling."
-  # Use "cd" because older versions of git (eg, CircleCI) don't support the -C command-line option.
+  # Use "cd" because older versions of git (e.g., CircleCI) don't support the -C command-line option.
   # In a Travis pull request, a repository can be in state "(HEAD detached at b475d58d)"
   # and "git pull" fails.
   (cd "${DESTINATION}" && (git pull -q || (git branch && true)))
