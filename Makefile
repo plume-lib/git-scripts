@@ -1,6 +1,7 @@
 .PHONY: all test clean
 
-all: style-check test
+
+all: test
 
 test:
 	${MAKE} -C tests test

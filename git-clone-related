@@ -157,7 +157,7 @@ else
     echo "${SCRIPT_NAME}: About to run: ci-org-and-branch --debug"
     "${CI_INFO}" --debug "${UPSTREAM_ORG}"
     echo "${SCRIPT_NAME}: Done: ci-org-and-branch --debug"
-    false
+    exit 1
   fi
 
   if [ -n "$DEBUG" ]; then
