@@ -1,6 +1,5 @@
 .PHONY: all test clean
 
-
 all: test
 
 test:
