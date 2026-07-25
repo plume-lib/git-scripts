@@ -75,8 +75,9 @@ if the fork does not exist.
 
 ### git-find-branch
 
-Tests whether a branch exists in a Git repository;
-prints the branch, or prints "master" if the branch does not exist.
+Tests whether any of the given branches exists in a Git repository;
+prints the first branch that exists, or the repository's default branch
+(often "main" or "master") if none of the given branches exists.
 [Documentation](git-find-branch) at top of file.
 
 ### git-test-mergetool

@@ -73,36 +73,40 @@ def main() -> None:
 
     # Exit status 0 means no conflicts remain, 1 means some merge conflict remains.
     conflicts_remain = False
-    with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
-        file_len = len(lines)
-        i = 0
-        while i < file_len:
-            conflict = looking_at_conflict(filename, i, lines)
-            if conflict is None:
-                tmp.write(lines[i])
-                i += 1
-            else:
-                (base, parent1, parent2, num_lines) = conflict
-                merged = merge(
-                    base,
-                    parent1,
-                    parent2,
-                    args.adjacent_lines,
-                    args.blank_lines,
-                    args.java_imports,
-                )
-                if merged is None:
+    tmp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as tmp:
+            tmp_path = Path(tmp.name)
+            file_len = len(lines)
+            i = 0
+            while i < file_len:
+                conflict = looking_at_conflict(filename, i, lines)
+                if conflict is None:
                     tmp.write(lines[i])
                     i += 1
-                    conflicts_remain = True
                 else:
-                    for line in merged:
-                        tmp.write(line)
-                    i += num_lines
+                    (base, parent1, parent2, num_lines) = conflict
+                    merged = merge(
+                        base,
+                        parent1,
+                        parent2,
+                        args.adjacent_lines,
+                        args.blank_lines,
+                        args.java_imports,
+                    )
+                    if merged is None:
+                        tmp.write(lines[i])
+                        i += 1
+                        conflicts_remain = True
+                    else:
+                        for line in merged:
+                            tmp.write(line)
+                        i += num_lines
 
-        tmp.close()
-        shutil.copyfile(tmp.name, filename)
-        Path(tmp.name).unlink()
+        shutil.copyfile(tmp_path, filename)
+    finally:
+        if tmp_path is not None:
+            tmp_path.unlink(missing_ok=True)
 
     if conflicts_remain:
         sys.exit(1)
