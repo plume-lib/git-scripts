@@ -80,6 +80,15 @@ prints the first branch that exists, or the repository's default branch
 (often "main" or "master") if none of the given branches exists.
 [Documentation](git-find-branch) at top of file.
 
+### pr-number
+
+Print the number of the GitHub pull request whose head is the current branch.
+Works both when the pull request is within one repository and when the
+pull request is from a fork to the fork's parent repository.
+[Documentation](pr-number) at top of file.
+
+## Merging and conflicts
+
 ### git-test-mergetool
 
 Creates a scratch repository containing a merge conflict, then runs

@@ -1,0 +1,44 @@
+#!/bin/sh
+# Print the number of the GitHub pull request whose head is the current branch.
+# Works both when the pull request is within one repository and when the
+# pull request is from a fork to the fork's parent repository.
+
+set -eu
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" = "HEAD" ]; then
+  echo "pr-number: detached HEAD, no branch to look up" >&2
+  exit 1
+fi
+
+# The pushed branch name can differ from the local branch name.
+if upstream=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null); then
+  remote=${upstream%%/*}
+  head_branch=${upstream#*/}
+else
+  remote=origin
+  head_branch=$branch
+fi
+
+# The repository that holds the branch, plus its parent if the repository is a fork.
+# Resolving from the remote's URL avoids gh's base-repo guessing.
+repo_json=$(gh repo view "$(git remote get-url "$remote")" --json nameWithOwner,parent)
+head_repo=$(printf '%s' "$repo_json" | jq -r '.nameWithOwner')
+head_owner=${head_repo%%/*}
+parent_repo=$(printf '%s' "$repo_json" | jq -r 'if .parent then .parent.owner.login + "/" + .parent.name else empty end')
+
+# gh does not accept the "owner:branch" form for --head, so match the head
+# repository's owner afterward.  Otherwise a same-named branch in a sibling
+# fork could be reported.
+for repo in "$head_repo" $parent_repo; do
+  number=$(gh pr list --repo "$repo" --head "$head_branch" --state all \
+             --json number,headRepositoryOwner \
+             --jq "[.[] | select(.headRepositoryOwner.login == \"$head_owner\") | .number] | first // empty")
+  if [ -n "$number" ]; then
+    echo "$number"
+    exit 0
+  fi
+done
+
+echo "pr-number: no pull request found for $head_owner:$head_branch" >&2
+exit 1
