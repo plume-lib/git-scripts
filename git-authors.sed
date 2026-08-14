@@ -180,5 +180,6 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^Copilot$/d
 /^coderabbitai\[bot\]$/d
 /^Claude$/d
+/^Claude Opus 5$/d
 
 /^unknown$/d
