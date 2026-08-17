@@ -181,5 +181,6 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^coderabbitai\[bot\]$/d
 /^Claude$/d
 /^Claude Opus 5$/d
+/^Claude Sonnet 5$/d
 
 /^unknown$/d
