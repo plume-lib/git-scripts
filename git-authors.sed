@@ -28,6 +28,7 @@ s/^Lázaro Clapp$/Lazaro Clapp/
 s/^Maxi17$/Maximilian Gama/
 s/^MichalStehlikCz$/Michal Stehlik/
 s/^Michèle$/Stefan Heule/
+s/^Moby Mikes 💻/Chimaobi Emeka-Iheonu/
 s/^MrigankArora$/Mrigank Arora/
 s/^NITIN DAS$/Nitin Kumar Das/
 s/^NITIN KUMAR DAS$/Nitin Kumar Das/
