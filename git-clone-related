@@ -122,46 +122,41 @@ else
   # TODO: Put this behind the debugging flag.
   echo "plume-scripts HEAD = $(git -C "${PLUME_SCRIPTS}" rev-parse HEAD)"
 
-  CI_INFO="${PLUME_SCRIPTS}/ci-org-and-branch"
+  CI_INFO="${PLUME_SCRIPTS}/set-ci-org-and-branch"
   echo "CI_INFO=${CI_INFO}"
   if [ ! -f "$CI_INFO" ]; then
-    echo "ci-org-and-branch script does not exist: ${CI_INFO}"
+    echo "set-ci-org-and-branch script does not exist: ${CI_INFO}"
     echo "PLUME_SCRIPTS=${PLUME_SCRIPTS}"
     ls -a "${PLUME_SCRIPTS}"
-    echo "ci-org-and-branch script does not exist: ${CI_INFO}"
+    echo "set-ci-org-and-branch script does not exist: ${CI_INFO}"
+    exit 1
+  fi
+
+  # `set-ci-org-and-branch` is sourced rather than run, and it is configured by
+  # variables rather than by command-line arguments.  It sets CI_ORGANIZATION
+  # and CI_BRANCH (and CI_DEFAULT_BRANCH_NAME and CI_PULL_JSON, unused here).
+  # shellcheck disable=SC2034  # used by the sourced script
+  CI_DEFAULT_ORGANIZATION="${UPSTREAM_ORG}"
+  if [ -n "$DEBUG" ]; then
+    # shellcheck disable=SC2034  # used by the sourced script
+    CI_DEBUG=1
+    echo "${SCRIPT_NAME}: About to source: set-ci-org-and-branch in ${PWD}"
+  fi
+  # shellcheck source=/dev/null
+  if ! . "${CI_INFO}"; then
+    echo "${SCRIPT_NAME}: Unable to source set-ci-org-and-branch in ${PWD}"
+    echo "${SCRIPT_NAME}: About to source: set-ci-org-and-branch, with debugging"
+    # shellcheck disable=SC2034  # used by the sourced script
+    CI_DEBUG=1
+    # shellcheck source=/dev/null
+    . "${CI_INFO}"
+    echo "${SCRIPT_NAME}: Done: source set-ci-org-and-branch, with debugging"
     exit 1
   fi
 
   if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: About to run: ci-org-and-branch --debug"
-    "${CI_INFO}" --debug "${UPSTREAM_ORG}"
-    echo "${SCRIPT_NAME}: Done: ci-org-and-branch --debug"
-  fi
-
-  if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: About to run: ci-org-and-branch"
-  fi
-  ci_info_output="$("${CI_INFO}" "${UPSTREAM_ORG}")"
-  if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: Done: ci-org-and-branch"
-    echo "---- start of ci-org-and-branch output ----"
-    # If `set -v` is on, the output will appear doubled, with the first copy preceded by "+ echo ".
-    echo "${ci_info_output}"
-    echo "---- end of ci-org-and-branch output ----"
-    echo "${SCRIPT_NAME}: About to eval ci-org-and-branch output in ${PWD}"
-  fi
-
-  if ! eval "${ci_info_output}"; then
-    echo "${SCRIPT_NAME}: Unable to eval ci-org-and-branch output, which was:"
-    echo "${ci_info_output}"
-    echo "${SCRIPT_NAME}: About to run: ci-org-and-branch --debug"
-    "${CI_INFO}" --debug "${UPSTREAM_ORG}"
-    echo "${SCRIPT_NAME}: Done: ci-org-and-branch --debug"
-    exit 1
-  fi
-
-  if [ -n "$DEBUG" ]; then
-    echo "${SCRIPT_NAME}: Done: eval ci-org-and-branch output in ${PWD}"
+    echo "${SCRIPT_NAME}: Done: source set-ci-org-and-branch in ${PWD}"
+    echo "CI_ORGANIZATION=${CI_ORGANIZATION} CI_BRANCH=${CI_BRANCH}"
   fi
   UPSTREAM_REPO_URL="https://github.com/${UPSTREAM_ORG}/${REPO_NAME}.git"
 
