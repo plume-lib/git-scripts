@@ -83,8 +83,9 @@ prints the first branch that exists, or the repository's default branch
 ### pr-number
 
 Print the number of the GitHub pull request whose head is the current branch.
-Works both when the pull request is within one repository and when the
-pull request is from a fork to the fork's parent repository.
+Works whether the pull request is within one repository or is from a fork to
+the fork's parent repository, and whether or not the branch that the pull
+request was made from is the one that the local branch tracks.
 [Documentation](pr-number) at top of file.
 
 ## Merging and conflicts
