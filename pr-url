@@ -1,0 +1,30 @@
+#!/bin/sh
+# Print the URL of the GitHub pull request whose head is the current branch,
+# and also open it in a web browser if one is already running.
+# See `pr-number` for how the pull request is found.
+
+set -eu
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd -P)"
+
+url=$("$SCRIPT_DIR"/pr-number --url)
+echo "$url"
+
+# Process names of common browsers.  Linux truncates process names to 15
+# characters, so "chromium-browser" appears as "chromium-browse".
+browsers='firefox|firefox-bin|firefox-esr|chrome|chromium|chromium-browse|brave|msedge|opera|vivaldi-bin|Google Chrome|Safari'
+if ! pgrep -u "$(id -u)" -x "$browsers" > /dev/null 2>&1; then
+  exit 0
+fi
+
+case "$(uname -s)" in
+  Darwin)
+    open "$url"
+    ;;
+  *)
+    # Without a display (for example, over ssh), a graphical browser cannot be used.
+    if [ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ] && command -v xdg-open > /dev/null 2>&1; then
+      xdg-open "$url" > /dev/null 2>&1 &
+    fi
+    ;;
+esac

@@ -3,8 +3,19 @@
 # Works whether the pull request is within one repository or is from a fork to
 # the fork's parent repository, and whether or not the branch that the pull
 # request was made from is the one that the local branch tracks.
+# With --url, prints the pull request's URL instead of its number.
 
 set -eu
+
+field=number
+if [ "${1:-}" = "--url" ]; then
+  field=url
+  shift
+fi
+if [ $# -ne 0 ]; then
+  echo "Usage: pr-number [--url]" >&2
+  exit 2
+fi
 
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [ "$branch" = "HEAD" ]; then
@@ -61,12 +72,12 @@ fi
 # repository's owner afterward.  Otherwise a same-named branch in an unrelated
 # fork could be reported.
 for repo in $repos; do
-  number=$(gh pr list --repo "$repo" --head "$head_branch" --state all \
-    --json number,headRepositoryOwner \
-    | jq -r --arg owners "$owners" \
-      '[.[] | select(.headRepositoryOwner.login as $o | $owners | split(" ") | index($o)) | .number] | first // empty')
-  if [ -n "$number" ]; then
-    echo "$number"
+  result=$(gh pr list --repo "$repo" --head "$head_branch" --state all \
+    --json "$field",headRepositoryOwner \
+    | jq -r --arg owners "$owners" --arg field "$field" \
+      '[.[] | select(.headRepositoryOwner.login as $o | $owners | split(" ") | index($o)) | .[$field]] | first // empty')
+  if [ -n "$result" ]; then
+    echo "$result"
     exit 0
   fi
 done

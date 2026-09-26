@@ -88,6 +88,12 @@ the fork's parent repository, and whether or not the branch that the pull
 request was made from is the one that the local branch tracks.
 [Documentation](pr-number) at top of file.
 
+### pr-url
+
+Print the URL of the GitHub pull request whose head is the current branch,
+and also open it in a web browser if one is already running.
+[Documentation](pr-url) at top of file.
+
 ## Merging and conflicts
 
 ### git-test-mergetool
