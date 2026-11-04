@@ -1,0 +1,24 @@
+#!/bin/sh
+
+case "$*" in
+  "repo view git@github.com:smillst/checker-framework.git --json nameWithOwner,parent")
+    echo '{"nameWithOwner":"smillst/checker-framework","parent":{"owner":{"login":"typetools"},"name":"checker-framework"}}'
+    ;;
+  "pr list --repo smillst/checker-framework --head issue8340 --state open --json number,headRepositoryOwner")
+    echo '[]'
+    ;;
+  "pr list --repo typetools/checker-framework --head issue8340 --state open --json number,headRepositoryOwner")
+    if [ "$PR_NUMBER_TEST_SCENARIO" = prefer-open ]; then
+      echo '[{"number":8342,"headRepositoryOwner":{"login":"smillst"}}]'
+    else
+      echo '[]'
+    fi
+    ;;
+  "pr list --repo smillst/checker-framework --head issue8340 --state all --json number,headRepositoryOwner")
+    echo '[{"number":39,"headRepositoryOwner":{"login":"smillst"}}]'
+    ;;
+  *)
+    echo "unexpected gh invocation: $*" >&2
+    exit 1
+    ;;
+esac

@@ -68,18 +68,23 @@ if [ -z "$repos" ]; then
   exit 1
 fi
 
+# Prefer an open pull request in any repository to a closed or merged pull
+# request in an earlier repository.  A branch in a fork often has a closed pull
+# request within the fork as well as an open pull request to the fork's parent.
 # gh does not accept the "owner:branch" form for --head, so match the head
 # repository's owner afterward.  Otherwise a same-named branch in an unrelated
 # fork could be reported.
-for repo in $repos; do
-  result=$(gh pr list --repo "$repo" --head "$head_branch" --state all \
-    --json "$field",headRepositoryOwner \
-    | jq -r --arg owners "$owners" --arg field "$field" \
-      '[.[] | select(.headRepositoryOwner.login as $o | $owners | split(" ") | index($o)) | .[$field]] | first // empty')
-  if [ -n "$result" ]; then
-    echo "$result"
-    exit 0
-  fi
+for state in open all; do
+  for repo in $repos; do
+    result=$(gh pr list --repo "$repo" --head "$head_branch" --state "$state" \
+      --json "$field",headRepositoryOwner \
+      | jq -r --arg owners "$owners" --arg field "$field" \
+        '[.[] | select(.headRepositoryOwner.login as $o | $owners | split(" ") | index($o)) | .[$field]] | first // empty')
+    if [ -n "$result" ]; then
+      echo "$result"
+      exit 0
+    fi
+  done
 done
 
 echo "pr-number: no pull request found for branch $head_branch in $repos" >&2

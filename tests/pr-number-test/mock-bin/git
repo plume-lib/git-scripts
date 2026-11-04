@@ -1,0 +1,20 @@
+#!/bin/sh
+
+case "$*" in
+  "rev-parse --abbrev-ref HEAD")
+    echo issue8340
+    ;;
+  "rev-parse --abbrev-ref --symbolic-full-name @{u}")
+    echo origin/issue8340
+    ;;
+  remote)
+    echo origin
+    ;;
+  "remote get-url origin")
+    echo git@github.com:smillst/checker-framework.git
+    ;;
+  *)
+    echo "unexpected git invocation: $*" >&2
+    exit 1
+    ;;
+esac
