@@ -181,7 +181,9 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^Copilot$/d
 /^coderabbitai\[bot\]$/d
 /^Claude$/d
-/^Claude Opus 5$/d
-/^Claude Sonnet 5$/d
+/^Claude Fable .*$/d
+/^Claude Haiku .*$/d
+/^Claude Opus .*$/d
+/^Claude Sonnet .*$/d
 
 /^unknown$/d
