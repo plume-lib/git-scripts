@@ -185,5 +185,6 @@ s/^zhangjiangqige$/Jiangqi Zhang/
 /^Claude Haiku .*$/d
 /^Claude Opus .*$/d
 /^Claude Sonnet .*$/d
+/^Claude [A-Z][a-z]* [0-9][0-9.]*$/d
 
 /^unknown$/d
